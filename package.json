@@ -1,0 +1,25 @@
+{
+  "name": "software-license-server",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "scripts":{
+    "setup": "node setup/setup.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WatcherWhale/Software-License-Server.git"
+  },
+  "author": "Mathias Maes (WatcherWhale)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/WatcherWhale/Software-License-Server/issues"
+  },
+  "homepage": "https://github.com/WatcherWhale/Software-License-Server#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "nexe": "^2.0.0-rc.34",
+    "socket.io": "^2.1.1",
+    "xml-js": "^1.6.7"
+  }
+}
