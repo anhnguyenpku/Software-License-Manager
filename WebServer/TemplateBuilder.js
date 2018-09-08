@@ -28,7 +28,7 @@ class TemplateBuilder
 
         return output;
     }
-
+    
     BuildLoginPage(page,options)
     {
 

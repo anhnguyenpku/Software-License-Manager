@@ -1,0 +1,34 @@
+.no-top-padding
+{
+    padding-top: 0px;
+}
+
+.align-top
+{
+    vertical-align: top;
+}
+
+.align-bottom
+{
+    vertical-align: bottom;
+}
+
+.align-middle
+{
+    vertical-align: middle;
+}
+
+.spacer
+{
+    margin-bottom: 50px;
+}
+
+.card.info
+{
+    margin: .75rem;
+}
+
+.title.is-huge
+{
+    font-size: 4rem;
+}

@@ -28,7 +28,7 @@ function StartServer(appHandler)
 //Web Routes
 web.all("/",async function(req,res)
 {
-    res.send(builder.BuildPage("Dashboard",{}));
+    res.send(builder.BuildPage("Dashboard",{"softpanel":"is-active"}));
 });
 
 module.exports = {"StartServer": StartServer};
