@@ -26,7 +26,7 @@ const config = require('../modules/ConfigHandler');
 const database = require('../modules/Mysql');
 database.Start(config.database, logger);
 
-let query = fs.readFileSync("SQL/setup.sql").toString();
+let query = fs.readFileSync(__dirname + "/SQL/setup.sql").toString();
 
 database.Query(query,function(results,fields,err)
 {
