@@ -15,6 +15,7 @@
     "ssl":
     {
         "key": "path/to/key",
-        "cert": "path/to/cert"
+        "cert": "path/to/cert",
+        "passphrase": ""
     }
 }

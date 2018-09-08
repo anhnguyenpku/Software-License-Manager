@@ -16,7 +16,7 @@ function StartServer(appHandler)
     app = appHandler;
 
     //Start the web- and socketserver
-    server = https.createServer(app.Config.ssl,web).listen(app.Config.web.port);
+    server = https.createServer(app.Config.ReadSSL(),web).listen(app.Config.web.port);
     sockets.Listen(server,app);
 
     //Log
