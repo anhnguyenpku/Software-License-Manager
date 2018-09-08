@@ -24,4 +24,4 @@ function StartServer(appHandler)
 }
 
 
-module.exports = {"StartServer":StartServer};
+module.exports = {"StartServer": StartServer};

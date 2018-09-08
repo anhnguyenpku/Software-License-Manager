@@ -17,13 +17,10 @@ const config = require('./modules/ConfigHandler');
 logger.Log("Loader","Loaded Config");
 
 //Load Database
-const mysql = require('mysql');
-var connection = mysql.createConnection(config.database);
-connection.connect(function(err)
-{
-    if(err)
-        logger.Error("Loader",err.message);
-});
+const database = require('./modules/Mysql');
+database.Start(config.database, logger);
+
+logger.Log("Loader", "Loaded Mysql Database Pool");
 
 //Load Web Server
 const webServer = require("./WebServer/WebServer");
@@ -34,7 +31,7 @@ logger.Log("Loader", "Loaded WebServer");
 
 //Setting up AppHandler
 app.Logger = logger;
-app.Database = connection;
+app.Database = database;
 app.Config = config;
 app.WebServer = webServer;
 
