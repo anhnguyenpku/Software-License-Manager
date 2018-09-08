@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS `ls_users` (
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT '',
+  `username` TEXT NULL COMMENT '',
+  `password` LONGTEXT NULL COMMENT '',
+  `salt` TEXT NULL COMMENT '',
+  PRIMARY KEY (`id`)  COMMENT '')
+ENGINE = InnoDB;
+
