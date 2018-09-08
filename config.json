@@ -1,0 +1,20 @@
+{
+    "web":
+    {
+        "port": 443
+    },
+    "database":
+    {
+        "host":"localhost",
+        "port": 3306,
+        "user":"user",
+        "password":"password",
+
+        "databse": "licenseServer"
+    },
+    "ssl":
+    {
+        "key": "path/to/key",
+        "cert": "path/to/cert"
+    }
+}
