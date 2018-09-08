@@ -1,7 +1,7 @@
 {
   "name": "software-license-server",
   "version": "0.0.1",
-  "description": "",
+  "description": "A new secure platform to generate license keys for your software and distribute it.",
   "main": "app.js",
   "scripts": {
     "setup": "node setup/setup.js"
