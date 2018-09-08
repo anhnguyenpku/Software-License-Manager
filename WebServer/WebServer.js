@@ -1,13 +1,15 @@
 const express = require('express');
 const https = require('https');
 const sockets = require('./SocketHandler');
+const TemplateBuilder = require('./TemplateBuilder')
 
+let builder = new TemplateBuilder();
 let web = express();
 let server;
 let app;
 
 //Create a static web folder
-web.use(express.static("static"));
+web.use(express.static(__dirname + "/static"));
 
 //Start the server
 function StartServer(appHandler)
@@ -23,5 +25,10 @@ function StartServer(appHandler)
     app.Logger.Log("WebServer", "Socket- and WebServer are successfully started.")
 }
 
+//Web Routes
+web.all("/",async function(req,res)
+{
+    res.send(builder.BuildPage("Dashboard",{}));
+});
 
 module.exports = {"StartServer": StartServer};
