@@ -50,6 +50,7 @@ let settings = new Settings(database,function(err)
     app.Database = database;
     app.Config = config;
     app.WebServer = webServer;
+    app.Settings = settings;
 
     logger.Log("Loader", "Starting WebServer");
     webServer.StartServer(app);

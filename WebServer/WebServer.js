@@ -28,7 +28,7 @@ function StartServer(appHandler)
     app = appHandler;
 
     //Initialize authenticator
-    authenticator = new UserAuthenticator(app.Database);
+    authenticator = new UserAuthenticator(app.Database,app.Settings);
 
     //Start the web- and socketserver
     server = https.createServer(app.Config.ReadSSL(),web).listen(app.Config.web.port);
@@ -42,7 +42,6 @@ function StartServer(appHandler)
 
 web.all("/",async function(req,res)
 {
-    app.Logger.Log("Cookies", req.cookies);
     res.send(builder.BuildPage("Dashboard",{"softpanel":"is-active"}));
 });
 

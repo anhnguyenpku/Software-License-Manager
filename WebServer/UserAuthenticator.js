@@ -12,6 +12,13 @@ class UserAuthenticator
         this.Database = database;
         this.Settings = settings;
 
+        this.divider = this.Settings.GetSetting("authenticator.divider");
+        this.expirationDays = this.Settings.GetSetting("authenticator.expiration");
+        this.iterations = this.Settings.GetSetting("authenticator.iterations");
+        this.saltLength = this.Settings.GetSetting("authenticator.saltlen");
+        this.cookieLength = this.Settings.GetSetting("authenticator.cookielen");
+        this.secretLength = this.Settings.GetSetting("authenticator.secretlen");
+
         auth = this;
     }
 
@@ -31,14 +38,14 @@ class UserAuthenticator
             }
 
             let userdata = results[0];
-            let secret = userdata.secret.split(divider);
+            let secret = userdata.secret.split(auth.divider);
 
             let hash = auth.GetNakedHash(password,secret[1]);
 
             //Check password 
             if(hash === secret[0])
             {
-                let cookieSecret = auth.GenerateKey(25);
+                let cookieSecret = auth.GenerateKey(auth.cookieLength);
                 
                 let date = new Date();
                 date.setDate(date.getDate() + 5);
@@ -125,8 +132,8 @@ class UserAuthenticator
     SecurePassword(password)
     {
         //Generate Salt
-        let salt = this.GenerateKey(25);
-        let hash = crypto.pbkdf2Sync(password,salt,100000,512,'sha512').toString('hex');
+        let salt = this.GenerateKey(this.saltLength);
+        let hash = crypto.pbkdf2Sync(password,salt,this.iterations,this.secretLength,'sha512').toString('hex');
 
         let output = hash + divider + salt;
         return output;

@@ -25,3 +25,4 @@ INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.divider', ':')
 INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.iterations', '100000');
 INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.secretlen', '512');
 INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.saltlen', '25');
+INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.cookielen', '25');

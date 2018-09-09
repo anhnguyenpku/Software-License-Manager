@@ -28,7 +28,7 @@ class Settings
             if(setting.key === key)
             {
                 output = setting;
-                break;
+                return;
             }
         });
 
