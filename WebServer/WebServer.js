@@ -2,7 +2,9 @@
 const express = require('express');
 const https = require('https');
 const http = require('http');
+
 const cookieParser = require('cookie-parser');
+const fileUpload = require('express-fileupload');
 
 //Modules
 const sockets = require('./SocketHandler');
@@ -21,6 +23,7 @@ let app;
 //Express extensions
 web.use(express.static(__dirname + "/files/static"));
 web.use(cookieParser());
+web.use(fileUpload());
 web.use(CheckAuthentication);
 
 //CheckAuthentication
