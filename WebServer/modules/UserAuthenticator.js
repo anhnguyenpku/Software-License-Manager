@@ -69,11 +69,14 @@ class UserAuthenticator
         });
     }
 
-    async Register(login, password)
+    async Register(login, password,callback)
     {
         let secret = this.SecurePassword(password);
 
-        this.Database.QueryEmpty("INSERT IGNORE INTO `slm_users` (`login`,`secret`) VALUES ('" + login + "', '" + password +"')");
+        this.Database.Query("INSERT IGNORE INTO `slm_users` (`login`,`secret`) VALUES ('" + login + "', '" + password +"')",function(results,fields,err)
+        {
+            callback(err);
+        });
     }
 
     async ValidateCookie(cookie,sessioninfo,callback)

@@ -66,9 +66,20 @@ function AddAdminUserEntry()
         //Load The Authenticator
         let auth = new Auth(database,settings);
 
-        auth.Register(login,auth.Hmac(login,password));
+        auth.Register(login,auth.Hmac(login,password),function(err)
+        {
+            database.Stop();
+            
+            if(err)
+            {
+                logger.Error("Setup (Account Creator)", err.message);
+                logger.Log("Setup", "Stopping the setup...");
+                logger.Log("Setup", "Try to fix the error and try again.");
 
-        logger.Log("Setup","Done");
-        database.Stop();
+                return;
+            }
+
+            logger.Log("Setup","Done");
+        });
     });
 }
