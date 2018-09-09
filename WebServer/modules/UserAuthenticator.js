@@ -98,6 +98,9 @@ class UserAuthenticator
             }
             else
             {
+                let remcCookieQuery = "DELETE FROM `sml_user_sessions` WHERE `id`=" + session.id;
+                auth.Database.QueryEmpty(removeCookieQuery);
+
                 callback(false,null);
             }
         });
