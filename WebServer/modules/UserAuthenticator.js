@@ -73,6 +73,7 @@ class UserAuthenticator
     {
         let secret = this.SecurePassword(password);
 
+        this.Database.QueryEmpty("INSERT IGNORE INTO `slm_users` (`login`,`secret`) VALUES ('" + login + "', '" + password +"')");
     }
 
     async ValidateCookie(cookie,sessioninfo,callback)
