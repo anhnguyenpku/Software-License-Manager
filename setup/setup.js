@@ -4,26 +4,15 @@ const Settings = require('../modules/Settings');
 const Auth = require("../WebServer/modules/UserAuthenticator");
 
 const contentPath = 'Content';
-const executablesPath = contentPath + '/executables';
 
 const login = "admin";
 const password = "admin";
 
-if(!fs.existsSync(contentPath)) fs.mkdir(contentPath,function(err)
-{
-    if(err)
-    {
-        LogFSError(err);
-        return;
-    }
-
-    fs.mkdir(executablesPath, LogFSError);
-});
+if(!fs.existsSync(contentPath)) fs.mkdir(contentPath,LogFSError);
 
 function LogFSError(err)
 {
-    if(err)
-        logger.Error("Setup (FS)", err.message);
+    if(err) logger.Error("Setup (FS)", err.message);
 }
 
 const config = require('../modules/ConfigHandler');
