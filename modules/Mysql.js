@@ -14,7 +14,7 @@ function Start(config, logger)
     pool = mysql.createPool(config);
 }
 
-function Query(querystring, callback)
+async function Query(querystring, callback)
 {
     pool.getConnection(function(err,con)
     {
@@ -39,5 +39,28 @@ function Query(querystring, callback)
     });
 
 }
+
+async function Query(querystring)
+{
+    pool.getConnection(function(err,con)
+    {
+        if(err)
+        {
+            Logger.Error("Mysql",err.message);
+            return;
+        }
+
+        con.query(querystring,function(err,results,fields)
+        {
+            if(err)
+            {
+                Logger.Error("Mysql",err.message);
+                return;
+            }
+        });
+    });
+
+}
+
 
 module.exports = {"Query":Query,"Start":Start};
