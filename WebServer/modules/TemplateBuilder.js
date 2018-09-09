@@ -24,6 +24,9 @@ class TemplateBuilder
         options.menu = mustache.to_html(this.MenuTemplate,menuoptions);
         options.page = pageHtml;
 
+        if(fs.existsSync(__dirname + "/../files/static/js/" + page + ".js")) options.scripts = '<script src="/js/' + page + '.js"></script>'
+        if(fs.existsSync(__dirname + "/../files/static/css/" + page + ".css")) options.styles = '<link rel="stylesheet" href="/css/' + page + '.css">'
+
         let output = mustache.to_html(this.MainTemplate,options);
 
         return output;
