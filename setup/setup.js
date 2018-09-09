@@ -30,8 +30,8 @@ let query = fs.readFileSync(__dirname + "/SQL/setup.sql").toString();
 
 database.Query(query,function(results,fields,err)
 {
-    if(err)
-        logger.Error("Setup (SQL)", err.message);
+    if(err) logger.Error("Setup (SQL)", err.message);
+    
+    logger.Log("Setup","Done");
+    database.Stop();
 });
-
-logger.Log("Setup","Done");
