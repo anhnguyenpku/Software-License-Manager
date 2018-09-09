@@ -22,10 +22,11 @@ class TemplateBuilder
 
         options.title = page;
         options.menu = mustache.to_html(this.MenuTemplate,menuoptions);
-        options.page = pageHtml;
 
-        if(fs.existsSync(__dirname + "/../files/static/js/" + page + ".js")) options.scripts = '<script src="/js/' + page + '.js"></script>'
-        if(fs.existsSync(__dirname + "/../files/static/css/" + page + ".css")) options.styles = '<link rel="stylesheet" href="/css/' + page + '.css">'
+        if(fs.existsSync(__dirname + "/../files/static/js/" + page + ".js")) options.scripts = '<script src="/js/' + page + '.js"></script>';
+        if(fs.existsSync(__dirname + "/../files/static/css/" + page + ".css")) options.styles = '<link rel="stylesheet" href="/css/' + page + '.css">';
+
+        options.page = mustache.to_html(pageHtml,options);
 
         let output = mustache.to_html(this.MainTemplate,options);
 

@@ -24,7 +24,14 @@ function Listen(server,appHandler,auth)
 
 function RegisterEvents(socket)
 {
-    
+    /*SOFTWARE API*/
+    socket.on("software.list",function()
+    {
+        app.Database.Query("SELECT * FROM `slm_software`",function(result,fields,err)
+        {
+            socket.emit("software.list",result);
+        });
+    });
 }
 
 function RegisterLoginPageEvents(socket)

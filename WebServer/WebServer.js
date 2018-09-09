@@ -67,12 +67,25 @@ function StartServer(appHandler)
     app.Logger.Log("WebServer", "Socket- and WebServer are successfully started.")
 }
 
-//Web Routes
+//Secure Web Routes
 
 web.all("/",async function(req,res)
 {
     res.send(builder.BuildPage("Dashboard",{"softpanel":"is-active"}));
 });
+
+web.all("/software",async function(req,res)
+{
+    res.send(builder.BuildPage("Software",{"softpanel":"is-active"}));
+});
+
+web.all("/software/add",async function(req,res)
+{
+    res.send(builder.BuildPage("Software",{"softpanel":"is-active","modal-active":"is-active"}));
+});
+
+
+//Insecure Web Routes
 
 web.all("/login",async function(req,res)
 {

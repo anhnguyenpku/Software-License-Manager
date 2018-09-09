@@ -1,0 +1,74 @@
+<div class="buttons is-right">
+    <a class="button is-success">Add</a>
+</div>
+
+<div class="small-spacer"></div>
+
+<table class="table is-striped is-hoverable">
+    <thead>
+        <th>Id</th>
+        <th>Sofware Name</th>
+        <th>Version</th>
+        <th>License Keys</th>
+        <th></th>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+<div class="modal {{modal-active}}">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Add Software</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <form id="softform">
+                <div class="field">
+                    <label class="label">Software Name*</label>
+                    <div class="control">
+                        <input class="input" type="text" placeholder="Name">
+                    </div>
+                </div>
+
+                <div class="columns">
+                    <div class="field column is-3">
+                        <label class="label">Version*</label>
+                        <div class="control">
+                            <input class="input" type="text" placeholder="Version">
+                        </div>
+                    </div>
+                    <div class="field column is-9">
+                        <label class="label">Author or Company*</label>
+                        <div class="control">
+                            <input class="input" type="text" placeholder="Author or Company">
+                        </div>
+                    </div>
+                </div>
+
+                <label class="label">Upload Your Software*</label>
+                <div class="file has-name">
+                    
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="resume">
+                        <span class="file-cta">
+                            <span class="file-icon">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label">
+                                Choose a file…
+                            </span>
+                        </span>
+                        <span class="file-name">Sofware collection (*.zip)</span>
+                    </label>
+                </div><br/>
+            </form>
+        </section>
+        <footer class="modal-card-foot buttons is-right">
+            <button class="button is-success">Save changes</button>
+            <button class="button">Cancel</button>
+        </footer>   
+    </div>
+</div>

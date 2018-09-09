@@ -23,8 +23,10 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `slm_software` (
   `id` VARCHAR(5) NOT NULL COMMENT '',
   `name` TEXT NULL COMMENT '',
+  `version` TINYTEXT NULL COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
+
 
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.expiration', '5');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.divider', ':');

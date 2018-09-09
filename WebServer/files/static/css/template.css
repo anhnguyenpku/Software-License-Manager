@@ -23,6 +23,11 @@
     margin-bottom: 50px;
 }
 
+.samll-spacer
+{
+    margin-bottom: 25px;
+}
+
 .card.info
 {
     margin: .75rem;
