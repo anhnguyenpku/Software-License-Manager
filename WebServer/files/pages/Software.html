@@ -8,7 +8,8 @@
     <thead>
         <th>Id</th>
         <th>Sofware Name</th>
-        <th>Version</th>
+        <th>Distributor</th>
+        <th>Latest Version</th>
         <th>License Keys</th>
         <th></th>
     </thead>
@@ -22,14 +23,14 @@
     <div class="modal-card">
         <header class="modal-card-head">
             <p class="modal-card-title">Add Software</p>
-            <button class="delete" aria-label="close"></button>
+            <button class="delete modal-close-btn" aria-label="close"></button>
         </header>
         <section class="modal-card-body">
-            <form id="softform">
+            <form id="softform" action="/software/add" method="POST" encType="multipart/form-data">
                 <div class="field">
                     <label class="label">Software Name*</label>
                     <div class="control">
-                        <input class="input" type="text" placeholder="Name">
+                        <input class="input" type="text" placeholder="Name" name="name">
                     </div>
                 </div>
 
@@ -37,13 +38,13 @@
                     <div class="field column is-3">
                         <label class="label">Version*</label>
                         <div class="control">
-                            <input class="input" type="text" placeholder="Version">
+                            <input class="input" type="text" placeholder="Version" name="version">
                         </div>
                     </div>
                     <div class="field column is-9">
                         <label class="label">Author or Company*</label>
                         <div class="control">
-                            <input class="input" type="text" placeholder="Author or Company">
+                            <input class="input" type="text" placeholder="Author or Company" name="distributor">
                         </div>
                     </div>
                 </div>
@@ -52,7 +53,7 @@
                 <div class="file has-name">
                     
                     <label class="file-label">
-                        <input class="file-input" type="file" name="resume">
+                        <input class="file-input" type="file" name="package">
                         <span class="file-cta">
                             <span class="file-icon">
                                 <i class="fas fa-upload"></i>
@@ -67,8 +68,8 @@
             </form>
         </section>
         <footer class="modal-card-foot buttons is-right">
-            <button class="button is-success">Save changes</button>
-            <button class="button">Cancel</button>
+            <button class="button is-success software-submit">Add Software</button>
+            <button class="button modal-close-btn">Cancel</button>
         </footer>   
     </div>
 </div>

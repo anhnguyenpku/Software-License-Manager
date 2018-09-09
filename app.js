@@ -9,17 +9,20 @@ logger.Log("Loader","Loaded logger");
 const AppHandler = require('./modules/AppHandler')
 let app = new AppHandler();
 
+app.Logger = logger;
 logger.Log("Loader","Loaded AppHandler");
 
 //Load Config
 const config = require('./modules/ConfigHandler');
 
+app.Config = config;
 logger.Log("Loader","Loaded Config");
 
 //Load Database
 const database = require('./modules/Mysql');
 database.Start(config.database, logger);
 
+app.Database = database;
 logger.Log("Loader", "Loaded Mysql Database Pool");
 
 //Load Settings from database
@@ -36,21 +39,21 @@ let settings = new Settings(database,function(err)
         return;
     }
 
+    app.Settings = settings;
     logger.Log("Loader", "Loaded Settings");
 
     //Load Web Server
     const webServer = require("./WebServer/WebServer");
 
+    app.WebServer = webServer;
     logger.Log("Loader", "Loaded WebServer");
 
-    //Load File Server
+    //Load FileSystem
+    const FileSystem = require('./FileSystem/FileHandler');
+    let fileSystem = new FileSystem(app);
 
-    //Setting up AppHandler
-    app.Logger = logger;
-    app.Database = database;
-    app.Config = config;
-    app.WebServer = webServer;
-    app.Settings = settings;
+    app.FileSystem = fileSystem;
+    logger.Log("Loader", "Loaded FileSystem");
 
     logger.Log("Loader", "Starting WebServer");
     webServer.StartServer(app);

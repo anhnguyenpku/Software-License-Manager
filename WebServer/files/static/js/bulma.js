@@ -8,4 +8,10 @@ $(document).ready(function() {
         $(".navbar-menu").toggleClass("is-active");
   
     });
+
+    $(".modal-close-btn").click(function()
+    {
+        console.log("ss");
+        $(this).parent().parent().parent().toggleClass("is-active");
+    });
 });

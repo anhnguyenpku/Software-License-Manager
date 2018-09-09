@@ -4,6 +4,8 @@ const https = require('https');
 const http = require('http');
 
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const busboyBodyParser = require('busboy-body-parser');
 const fileUpload = require('express-fileupload');
 
 //Modules
@@ -23,8 +25,11 @@ let app;
 //Express extensions
 web.use(express.static(__dirname + "/files/static"));
 web.use(cookieParser());
-web.use(fileUpload());
 web.use(CheckAuthentication);
+web.use(bodyParser.urlencoded({ extended: true }));
+web.use(bodyParser.json());
+web.use(fileUpload());
+//web.use(busboyBodyParser());
 
 //CheckAuthentication
 async function CheckAuthentication(req,res,next)
@@ -92,11 +97,22 @@ web.all("/software",async function(req,res)
     res.send(builder.BuildPage("Software",{"softpanel":"is-active"}));
 });
 
-web.all("/software/add",async function(req,res)
+web.get("/software/add",async function(req,res)
 {
     res.send(builder.BuildPage("Software",{"softpanel":"is-active","modal-active":"is-active"}));
 });
 
+web.post("/software/add", async function(req,res)
+{
+    let software = req.body.name;
+    let version = req.body.version;
+    let distributor = req.body.distributor;
+    let file = req.files.package;
+
+    app.FileSystem.RegisterSofwareVersion(software,distributor,version,file);
+
+    res.redirect("/software/add");
+});
 
 //Insecure Web Routes
 

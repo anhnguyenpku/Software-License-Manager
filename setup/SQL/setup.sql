@@ -21,9 +21,16 @@ CREATE TABLE IF NOT EXISTS `slm_user_sessions` (
 ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `slm_software` (
-  `id` VARCHAR(5) NOT NULL COMMENT '',
+  `id` VARCHAR(10) NOT NULL COMMENT '',
   `name` TEXT NULL COMMENT '',
-  `version` TINYTEXT NULL COMMENT '',
+  `distributor` TEXT NULL COMMENT '',
+  PRIMARY KEY (`id`)  COMMENT '')
+ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `slm_software_versions` (
+  `id` VARCHAR(10) NOT NULL COMMENT '',
+  `label` TINYTEXT NOT NULL COMMENT '',
+  `software` TINYTEXT NOT NULL COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
 
@@ -34,3 +41,6 @@ INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.iterati
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.secretlen', '512');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.saltlen', '25');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.cookielen', '25');
+
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('files.sidlen', '8');
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('files.vidlen', '8');
