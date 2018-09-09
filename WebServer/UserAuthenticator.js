@@ -150,4 +150,4 @@ class UserAuthenticator
     }
 }
 
-module.export = UserAuthenticator;
+module.exports = UserAuthenticator;
