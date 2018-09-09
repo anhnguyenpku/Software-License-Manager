@@ -1,6 +1,7 @@
 //Packages
 const express = require('express');
 const https = require('https');
+const http = require('http');
 const cookieParser = require('cookie-parser');
 
 //Modules
@@ -60,7 +61,16 @@ function StartServer(appHandler)
     authenticator = new UserAuthenticator(app.Database,app.Settings);
 
     //Start the web- and socketserver
-    server = https.createServer(app.Config.ReadSSL(),web).listen(app.Config.web.port);
+    if(app.Config.ssl.enabled)
+    {
+        server = https.createServer(app.Config.ReadSSL(),web).listen(app.Config.web.port);
+    }
+    else
+    {
+        server = http.Server(web);
+        server.listen(app.Config.web.port);
+    }
+
     sockets.Listen(server,app,authenticator);
 
     //Log

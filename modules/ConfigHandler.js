@@ -18,6 +18,10 @@ function Reload()
     {
         config = require('../config.json');
     }
+
+    config.Reload = Reload;
+    config.Save = Save;
+    config.ReadSSL = ReadSSL;
 }
 
 function ReadSSL()
@@ -30,9 +34,5 @@ function ReadSSL()
 
     return ssl;
 }
-
-config.Reload = Reload;
-config.Save = Save;
-config.ReadSSL = ReadSSL;
 
 module.exports = config;

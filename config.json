@@ -1,7 +1,7 @@
 {
     "web":
     {
-        "port": 443
+        "port": 80
     },
     "database":
     {
@@ -14,6 +14,7 @@
     },
     "ssl":
     {
+        "enabled": false,
         "key": "path/to/key",
         "cert": "path/to/cert",
         "passphrase": ""
