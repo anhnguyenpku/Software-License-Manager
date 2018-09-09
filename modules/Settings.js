@@ -6,7 +6,7 @@ class Settings
     {
         setts = this;
 
-        database.Query("SELECT * FROM `sml_settings`",function(results,fields,err)
+        database.Query("SELECT * FROM `slm_settings`",function(results,fields,err)
         {
             if(err)
             {

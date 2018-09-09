@@ -54,7 +54,7 @@ class UserAuthenticator
                 let date = new Date();
                 date.setDate(date.getDate() + 5);
 
-                let query = "INSERT INTO `sml_user_sessions` (`userid`, `cookie`, `ipadress`, `expirationdate`) VALUES (" +
+                let query = "INSERT INTO `slm_user_sessions` (`userid`, `cookie`, `ipadress`, `expirationdate`) VALUES (" +
                     userdata.id + ", '" + cookieSecret + "', '" + sessioninfo.ip + "', '" + date.toDateString() + "');";
 
                 auth.Database.QueryEmpty(query);
@@ -80,7 +80,7 @@ class UserAuthenticator
 
     async ValidateCookie(cookie,sessioninfo,callback)
     {
-        this.Database.Query("SELECT * FROM `sml_user_sessions` WHERE `cookie`='" + cookie + "' AND `ipadress`='" + sessioninfo.ip + "'",
+        this.Database.Query("SELECT * FROM `slm_user_sessions` WHERE `cookie`='" + cookie + "' AND `ipadress`='" + sessioninfo.ip + "'",
         function(results,fields,err)
         {
             if(err)
@@ -105,7 +105,7 @@ class UserAuthenticator
             }
             else
             {
-                let remcCookieQuery = "DELETE FROM `sml_user_sessions` WHERE `id`=" + session.id;
+                let remcCookieQuery = "DELETE FROM `slm_user_sessions` WHERE `id`=" + session.id;
                 auth.Database.QueryEmpty(removeCookieQuery);
 
                 callback(false,null);

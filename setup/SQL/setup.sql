@@ -5,13 +5,13 @@ CREATE TABLE IF NOT EXISTS `slm_users` (
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `sml_settings` (
+CREATE TABLE IF NOT EXISTS `slm_settings` (
   `key` varchar(45) NOT NULL COMMENT '',
   `value` TEXT NOT NULL COMMENT '',
   PRIMARY KEY (`key`)  COMMENT '')
 ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `sml_user_sessions` (
+CREATE TABLE IF NOT EXISTS `slm_user_sessions` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT '',
   `userid` INT NOT NULL COMMENT '',
   `cookie` TEXT NOT NULL COMMENT '',
@@ -20,9 +20,15 @@ CREATE TABLE IF NOT EXISTS `sml_user_sessions` (
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
 
-INSERT IGNORE INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.expiration', '5');
-INSERT IGNORE INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.divider', ':');
-INSERT IGNORE INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.iterations', '100000');
-INSERT IGNORE INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.secretlen', '512');
-INSERT IGNORE INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.saltlen', '25');
-INSERT IGNORE INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.cookielen', '25');
+CREATE TABLE IF NOT EXISTS `slm_software` (
+  `id` VARCHAR(5) NOT NULL COMMENT '',
+  `name` TEXT NULL COMMENT '',
+  PRIMARY KEY (`id`)  COMMENT '')
+ENGINE = InnoDB;
+
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.expiration', '5');
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.divider', ':');
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.iterations', '100000');
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.secretlen', '512');
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.saltlen', '25');
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.cookielen', '25');
