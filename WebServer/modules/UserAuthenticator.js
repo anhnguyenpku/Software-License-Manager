@@ -59,7 +59,7 @@ class UserAuthenticator
 
                 auth.Database.QueryEmpty(query);
 
-                callback(cookieSecret,false,null);
+                callback(cookieSecret,true,null);
             }
             else
             {
@@ -80,7 +80,7 @@ class UserAuthenticator
 
     async ValidateCookie(cookie,sessioninfo,callback)
     {
-        this.Database.Query("SELECT * FROM `sml_user_settings` WHERE `cookie`='" + cookie + "' AND `ipadress`='" + sessioninfo.ip + "'",
+        this.Database.Query("SELECT * FROM `sml_user_sessions` WHERE `cookie`='" + cookie + "' AND `ipadress`='" + sessioninfo.ip + "'",
         function(results,fields,err)
         {
             if(err)
@@ -98,7 +98,6 @@ class UserAuthenticator
 
             let date = new Date();
             let exdate = new Date(session.expirationdate);
-
 
             if(date < exdate)
             {

@@ -30,9 +30,14 @@ async function CheckAuthentication(req,res,next)
         next();
         return;
     }
+    else if(!req.cookies['seskey'])
+    {
+        res.redirect("/login");
+        return;
+    }
 
     let sesinfo = new SessionInfo(req);
-    authenticator.ValidateCookie(sesinfo.cookies.seskey,sesinfo,function(valid,err)
+    authenticator.ValidateCookie(sesinfo.cookies['seskey'],sesinfo,function(valid,err)
     {
         if(valid)
         {
