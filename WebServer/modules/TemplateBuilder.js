@@ -1,8 +1,8 @@
 const fs = require('fs');
 const mustache = require('mustache');
 
-const templateFolder = __dirname + "/html/templates/";
-const pagesFolder = __dirname + "/html/pages/";
+const templateFolder = __dirname + "/../html/templates/";
+const pagesFolder = __dirname + "/../html/pages/";
 
 class TemplateBuilder
 {
@@ -29,9 +29,13 @@ class TemplateBuilder
         return output;
     }
     
-    BuildLoginPage(page,options)
+    BuildLoginPage(options)
     {
+        this.Refresh();
 
+        let output = mustache.to_html(this.LoginTemplate,options);
+
+        return output;
     }
 
     Refresh()

@@ -71,7 +71,7 @@ web.all("/",async function(req,res)
 
 web.all("/login",async function(req,res)
 {
-    res.send("LOGIN PAGE");
+    res.send(builder.BuildLoginPage({}));
 });
 
 module.exports = {"StartServer": StartServer};
