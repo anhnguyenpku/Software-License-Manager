@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS `sml_user_sessions` (
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
 
-INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.expiration', '5');
-INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.divider', ':');
-INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.iterations', '100000');
-INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.secretlen', '512');
-INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.saltlen', '25');
-INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.cookielen', '25');
+INSERT IGNORE INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.expiration', '5');
+INSERT IGNORE INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.divider', ':');
+INSERT IGNORE INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.iterations', '100000');
+INSERT IGNORE INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.secretlen', '512');
+INSERT IGNORE INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.saltlen', '25');
+INSERT IGNORE INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.cookielen', '25');
