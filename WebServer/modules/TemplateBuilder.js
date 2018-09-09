@@ -1,8 +1,8 @@
 const fs = require('fs');
 const mustache = require('mustache');
 
-const templateFolder = __dirname + "/../html/templates/";
-const pagesFolder = __dirname + "/../html/pages/";
+const templateFolder = __dirname + "/../files/templates/";
+const pagesFolder = __dirname + "/../files/pages/";
 
 class TemplateBuilder
 {

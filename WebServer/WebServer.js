@@ -18,7 +18,7 @@ let server;
 let app;
 
 //Express extensions
-web.use(express.static(__dirname + "/static"));
+web.use(express.static(__dirname + "/files/static"));
 web.use(cookieParser());
 web.use(CheckAuthentication);
 
