@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const sockets = require('./SocketHandler');
 const TemplateBuilder = require('./modules/TemplateBuilder')
 const UserAuthenticator = require('./modules/UserAuthenticator');
-const SessionInfo = require('./modules/SessionInfo');
+const SessionInfo = require('./modules/SessionInfo').SessionInfo;
 
 //Objects
 let builder = new TemplateBuilder();

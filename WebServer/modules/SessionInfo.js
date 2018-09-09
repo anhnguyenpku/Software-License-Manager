@@ -7,4 +7,13 @@ class SessionInfo
     }
 }
 
-module.exports = SessionInfo;
+class SocketSessionInfo
+{
+    constructor(req)
+    {
+        this.ip = req.handshake.address;
+        this.cookies = {};
+    }
+}
+
+module.exports = {"SessionInfo":SessionInfo,"SocketSessionInfo":SocketSessionInfo};

@@ -28,12 +28,17 @@ class UserAuthenticator
         {
             if(err)
             {
-                callback(null,false,err);
+                callback(null,false,null);
                 return;
             }
-            else if(results.length > 0)
+            else if(results.length > 1)
             {
                 callback(null,false,"More users with the same login.");
+                return;
+            }
+            else if(results.length === 0)
+            {
+                callback(null,false,"User does not exist.");
                 return;
             }
 
