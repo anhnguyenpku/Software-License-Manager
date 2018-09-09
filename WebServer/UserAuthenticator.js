@@ -149,3 +149,5 @@ class UserAuthenticator
         return hash;
     }
 }
+
+module.export = UserAuthenticator;
