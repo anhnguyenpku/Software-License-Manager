@@ -5,8 +5,9 @@ const cookieParser = require('cookie-parser');
 
 //Modules
 const sockets = require('./SocketHandler');
-const TemplateBuilder = require('./TemplateBuilder')
-const UserAuthenticator = require('./UserAuthenticator');
+const TemplateBuilder = require('./modules/TemplateBuilder')
+const UserAuthenticator = require('./modules/UserAuthenticator');
+const SessionInfo = require('./modules/SessionInfo');
 
 //Objects
 let builder = new TemplateBuilder();
@@ -19,7 +20,30 @@ let app;
 //Express extensions
 web.use(express.static(__dirname + "/static"));
 web.use(cookieParser());
+web.use(CheckAuthentication);
 
+//CheckAuthentication
+async function CheckAuthentication(req,res,next)
+{
+    if(req.path === "/login")
+    {
+        next();
+        return;
+    }
+
+    let sesinfo = new SessionInfo(req);
+    authenticator.ValidateCookie(sesinfo.cookies.seskey,sesinfo,function(valid,err)
+    {
+        if(valid)
+        {
+            next();
+        }
+        else
+        {
+            res.redirect("/login");
+        }
+    });
+}
 
 //Start the server
 function StartServer(appHandler)
@@ -43,6 +67,11 @@ function StartServer(appHandler)
 web.all("/",async function(req,res)
 {
     res.send(builder.BuildPage("Dashboard",{"softpanel":"is-active"}));
+});
+
+web.all("/login",async function(req,res)
+{
+    res.send("LOGIN PAGE");
 });
 
 module.exports = {"StartServer": StartServer};
