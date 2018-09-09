@@ -1,5 +1,3 @@
---Create Tables--
-
 CREATE TABLE IF NOT EXISTS `slm_users` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT '',
   `login` TEXT NULL COMMENT '',
@@ -7,13 +5,13 @@ CREATE TABLE IF NOT EXISTS `slm_users` (
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `licenseServer`.`sml_settings` (
-  `key` TEXT NOT NULL COMMENT '',
+CREATE TABLE IF NOT EXISTS `sml_settings` (
+  `key` varchar(45) NOT NULL COMMENT '',
   `value` TEXT NOT NULL COMMENT '',
   PRIMARY KEY (`key`)  COMMENT '')
 ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `licenseServer`.`sml_user_sessions` (
+CREATE TABLE IF NOT EXISTS `sml_user_sessions` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT '',
   `userid` INT NOT NULL COMMENT '',
   `cookie` TEXT NOT NULL COMMENT '',
@@ -22,10 +20,8 @@ CREATE TABLE IF NOT EXISTS `licenseServer`.`sml_user_sessions` (
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
 
---Inserts--
-
-INSERT INTO `licenseServer`.`sml_settings` (`key`, `value`) VALUES ('authenticate.expiration', '5');
-INSERT INTO `licenseServer`.`sml_settings` (`key`, `value`) VALUES ('authenticate.divider', ':');
-INSERT INTO `licenseServer`.`sml_settings` (`key`, `value`) VALUES ('authenticate.iterations', '100000');
-INSERT INTO `licenseServer`.`sml_settings` (`key`, `value`) VALUES ('authenticate.secretlen', '512');
-INSERT INTO `licenseServer`.`sml_settings` (`key`, `value`) VALUES ('authenticate.saltlen', '25');
+INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.expiration', '5');
+INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.divider', ':');
+INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.iterations', '100000');
+INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.secretlen', '512');
+INSERT INTO `sml_settings` (`key`, `value`) VALUES ('authenticate.saltlen', '25');
