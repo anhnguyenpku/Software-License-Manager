@@ -32,7 +32,7 @@ class Settings
             }
         });
 
-        return output;
+        return output.value;
     }
 }
 

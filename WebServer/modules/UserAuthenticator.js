@@ -12,12 +12,12 @@ class UserAuthenticator
         this.Database = database;
         this.Settings = settings;
 
-        this.divider = this.Settings.GetSetting("authenticator.divider");
-        this.expirationDays = this.Settings.GetSetting("authenticator.expiration");
-        this.iterations = this.Settings.GetSetting("authenticator.iterations");
-        this.saltLength = this.Settings.GetSetting("authenticator.saltlen");
-        this.cookieLength = this.Settings.GetSetting("authenticator.cookielen");
-        this.secretLength = this.Settings.GetSetting("authenticator.secretlen");
+        this.divider = this.Settings.GetSetting("authenticate.divider");
+        this.expirationDays = parseInt(this.Settings.GetSetting("authenticate.expiration"));
+        this.iterations = parseInt(this.Settings.GetSetting("authenticate.iterations"));
+        this.saltLength = parseInt(this.Settings.GetSetting("authenticate.saltlen"));
+        this.cookieLength = parseInt(this.Settings.GetSetting("authenticate.cookielen"));
+        this.secretLength = parseInt(this.Settings.GetSetting("authenticate.secretlen"));
 
         auth = this;
     }
@@ -149,8 +149,16 @@ class UserAuthenticator
 
     GetNakedHash(password,salt)
     {
-        let hash = crypto.pbkdf2Sync(password,salt,100000,512,'sha512').toString('hex');
+        let hash = crypto.pbkdf2Sync(password,salt,this.iterations,this.secretLength,'sha512').toString('hex');
         return hash;
+    }
+
+    Hmac(key,password)
+    {
+        let hmac = crypto.createHmac('sha512',key);
+        hmac.update(password);
+
+        return hmac.digest('hex');
     }
 }
 
