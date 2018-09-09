@@ -1,9 +1,14 @@
+//Packages
 const express = require('express');
 const https = require('https');
+const cookieParser = require('cookie-parser');
+
+//Modules
 const sockets = require('./SocketHandler');
 const TemplateBuilder = require('./TemplateBuilder')
 const UserAuthenticator = require('./UserAuthenticator');
 
+//Objects
 let builder = new TemplateBuilder();
 let authenticator;
 
@@ -11,8 +16,10 @@ let web = express();
 let server;
 let app;
 
-//Create a static web folder
+//Express extensions
 web.use(express.static(__dirname + "/static"));
+web.use(cookieParser());
+
 
 //Start the server
 function StartServer(appHandler)
@@ -32,8 +39,10 @@ function StartServer(appHandler)
 }
 
 //Web Routes
+
 web.all("/",async function(req,res)
 {
+    app.Logger.Log("Cookies", req.cookies);
     res.send(builder.BuildPage("Dashboard",{"softpanel":"is-active"}));
 });
 

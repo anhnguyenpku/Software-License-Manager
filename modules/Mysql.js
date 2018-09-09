@@ -27,6 +27,8 @@ async function Query(querystring, callback)
 
         con.query(querystring,function(err,results,fields)
         {
+            pool.releaseConnection(con);
+
             if(err)
             {
                 //Logger.Error("Mysql",err.message);
@@ -40,7 +42,7 @@ async function Query(querystring, callback)
 
 }
 
-async function Query(querystring)
+async function QueryEmpty(querystring)
 {
     pool.getConnection(function(err,con)
     {
@@ -52,6 +54,8 @@ async function Query(querystring)
 
         con.query(querystring,function(err,results,fields)
         {
+            pool.releaseConnection(con);
+
             if(err)
             {
                 Logger.Error("Mysql",err.message);
@@ -62,5 +66,9 @@ async function Query(querystring)
 
 }
 
+function Stop()
+{
+    pool.end();
+}
 
-module.exports = {"Query":Query,"Start":Start};
+module.exports = {"Query":Query,"QueryEmpty":QueryEmpty,"Start":Start,"Stop":Stop};

@@ -7,6 +7,7 @@ class AppHandler
         this.FileServer;
         this.Config;
         this.Logger;
+        this.Settings;
     }
 }
 

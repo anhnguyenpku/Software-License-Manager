@@ -3,27 +3,16 @@ const crypto = require('crypto');
 const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 const divider = ':';
 
+let auth;
+
 class UserAuthenticator
 {
-    constructor(database)
+    constructor(database,settings)
     {
         this.Database = database;
-        this.Settings = [];
+        this.Settings = settings;
 
-        this.LoadDatabaseSettings();
-    }
-
-    async LoadDatabaseSettings()
-    {
-        this.Database.Query("SELCET * FROM `sml_settings` WHERE `key` LIKE 'authenticate.%'",function(results,fields,err)
-        {
-            if(err)
-            {
-                throw err;
-            }
-
-            this.Settings = results;
-        });
+        auth = this;
     }
 
     async Authenticate(login, password, sessioninfo, callback)
@@ -44,12 +33,12 @@ class UserAuthenticator
             let userdata = results[0];
             let secret = userdata.secret.split(divider);
 
-            let hash = this.GetNakedHash(password,secret[1]);
+            let hash = auth.GetNakedHash(password,secret[1]);
 
             //Check password 
             if(hash === secret[0])
             {
-                let cookieSecret = this.GenerateKey(25);
+                let cookieSecret = auth.GenerateKey(25);
                 
                 let date = new Date();
                 date.setDate(date.getDate() + 5);
@@ -57,7 +46,7 @@ class UserAuthenticator
                 let query = "INSERT INTO `licenseServer`.`sml_user_sessions` (`userid`, `cookie`, `ipadress`, `expirationdate`) VALUES (" +
                     userdata.id + ", " + cookieSecret + ", " + sessioninfo.ip + ", " + date.toDateString() + ");";
 
-                this.Database.Query(query);
+                auth.Database.QueryEmpty(query);
 
                 callback(cookieSecret,false,null);
             }
