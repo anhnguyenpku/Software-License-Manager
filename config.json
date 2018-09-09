@@ -10,7 +10,7 @@
         "user":"user",
         "password":"password",
 
-        "databse": "licenseServer"
+        "database": "licenseServer"
     },
     "ssl":
     {
