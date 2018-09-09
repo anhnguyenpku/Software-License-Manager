@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const SqlScape = require('sqlstring').escape;
 
 const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -23,6 +24,9 @@ class UserAuthenticator
 
     async Authenticate(login, password, sessioninfo, callback)
     {
+        SqlScape(login);
+        SqlScape(password);
+
         this.Database.Query("SELECT * FROM `slm_users` WHERE `login`='" + login + "'",function(results, fields, err)
         {
             if(err)
@@ -70,6 +74,9 @@ class UserAuthenticator
 
     async Register(login, password,callback)
     {
+        login = SqlScape(login);
+        password = SqlScape(password);
+
         let secret = this.SecurePassword(password);
 
         this.Database.Query("INSERT IGNORE INTO `slm_users` (`login`,`secret`) VALUES ('" + login + "', '" + secret +"')",function(results,fields,err)
@@ -80,6 +87,8 @@ class UserAuthenticator
 
     async ValidateCookie(cookie,sessioninfo,callback)
     {
+        SqlScape(cookie);
+
         this.Database.Query("SELECT * FROM `slm_user_sessions` WHERE `cookie`='" + cookie + "' AND `ipadress`='" + sessioninfo.ip + "'",
         function(results,fields,err)
         {
@@ -115,7 +124,8 @@ class UserAuthenticator
 
     async ChangePassword(oldPWD, newPWD)
     {
-        
+        SqlScape(oldPWD);
+        SqlScape(newPWD);
     }
     
     GenerateKey(length)

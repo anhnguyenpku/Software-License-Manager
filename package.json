@@ -4,7 +4,8 @@
   "description": "A new secure platform to generate license keys for your software and distribute it.",
   "main": "app.js",
   "scripts": {
-    "setup": "node setup/setup.js"
+    "setup": "node setup/setup.js",
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
     "mysql": "^2.16.0",
     "nexe": "^2.0.0-rc.34",
     "socket.io": "^2.1.1",
+    "sqlstring": "^2.3.1",
     "xml-js": "^1.6.7"
   },
   "devDependencies": {}
