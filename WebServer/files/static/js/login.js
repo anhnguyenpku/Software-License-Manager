@@ -31,3 +31,10 @@ socket.on("failed",function(message)
     //Display message
     console.log(message);
 });
+
+socket.on("success",function(cookie)
+{
+    SetCookie("seskey",cookie,999);
+
+    window.location.href = "/";
+});

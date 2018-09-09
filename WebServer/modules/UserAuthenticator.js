@@ -1,7 +1,6 @@
 const crypto = require('crypto');
 
 const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-const divider = ':';
 
 let auth;
 
@@ -55,8 +54,8 @@ class UserAuthenticator
                 let date = new Date();
                 date.setDate(date.getDate() + 5);
 
-                let query = "INSERT INTO `licenseServer`.`sml_user_sessions` (`userid`, `cookie`, `ipadress`, `expirationdate`) VALUES (" +
-                    userdata.id + ", " + cookieSecret + ", " + sessioninfo.ip + ", " + date.toDateString() + ");";
+                let query = "INSERT INTO `sml_user_sessions` (`userid`, `cookie`, `ipadress`, `expirationdate`) VALUES (" +
+                    userdata.id + ", '" + cookieSecret + "', '" + sessioninfo.ip + "', '" + date.toDateString() + "');";
 
                 auth.Database.QueryEmpty(query);
 
@@ -73,7 +72,7 @@ class UserAuthenticator
     {
         let secret = this.SecurePassword(password);
 
-        this.Database.Query("INSERT IGNORE INTO `slm_users` (`login`,`secret`) VALUES ('" + login + "', '" + password +"')",function(results,fields,err)
+        this.Database.Query("INSERT IGNORE INTO `slm_users` (`login`,`secret`) VALUES ('" + login + "', '" + secret +"')",function(results,fields,err)
         {
             callback(err);
         });
@@ -147,7 +146,7 @@ class UserAuthenticator
         let salt = this.GenerateKey(this.saltLength);
         let hash = crypto.pbkdf2Sync(password,salt,this.iterations,this.secretLength,'sha512').toString('hex');
 
-        let output = hash + divider + salt;
+        let output = hash + this.divider + salt;
         return output;
     }
 
