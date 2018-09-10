@@ -1,4 +1,4 @@
-console.log("Starting up Software License Server...");
+console.log("Starting up Software License Manager...");
 
 //Load Logger
 const logger = require('./modules/Logger');
