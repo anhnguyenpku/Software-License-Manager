@@ -1,4 +1,5 @@
 const SessionInfo = require('./modules/SessionInfo').SocketSessionInfo;
+const SqlScape = require('sqlstring').escape;
 
 let io;
 let lio;
@@ -27,9 +28,40 @@ function RegisterEvents(socket)
     /*SOFTWARE API*/
     socket.on("software.list",function()
     {
-        app.Database.Query("SELECT * FROM `slm_software`",function(result,fields,err)
+        //TODO implement error casting
+        app.Database.Query("SELECT * FROM `slm_software`",function(results,fields,err)
         {
-            socket.emit("software.list",result);
+            let query = "";
+            for (let i = 0; i < results.length; i++)
+            {
+                const result = results[i];
+                
+                query += "SELECT * FROM `slm_software_versions` WHERE `id`='" + result.lastVersion + "' LIMIT 1;";
+            }
+
+            app.Database.Query(query,function(versions,fields,err)
+            {
+                for (let i = 0; i < results.length; i++)
+                {
+                    const version = versions[i];
+                    results[i].version = version.label;
+                }
+
+                socket.emit("software.list",results);
+            });
+        });
+    });
+
+    socket.on("software.versions.list",function(sid)
+    {
+        app.Database.Query("SELECT * FROM `slm_software_versions` WHERE `software`=" + SqlScape(sid),function(results,fields,err)
+        {
+            if(err)
+            {
+                app.Error("SocketHandler", err.message);
+            }
+
+            socket.emit("software.versions.list",results);
         });
     });
 }

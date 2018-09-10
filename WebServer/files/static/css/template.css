@@ -37,3 +37,21 @@
 {
     font-size: 4rem;
 }
+
+.title .button
+{
+    vertical-align: middle;
+}
+
+.button.is-circle
+{
+    border-radius: 50%;
+
+    height: 40px;
+    width: 40px;
+}
+
+input:disabled
+{
+    cursor: text !important;
+}

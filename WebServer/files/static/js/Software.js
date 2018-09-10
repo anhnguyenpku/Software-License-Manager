@@ -14,7 +14,9 @@ socket.on("software.list",function(list)
     {
         const softItem = list[i];
         
-        var html = "<tr><td>" + softItem.id + "</td> <td>" + softItem.name + "</td> <td>" + softItem.distributor + "</td> <td>V0</td> <td>0</td> <td><a class='button is-info'>Edit</a></td></tr>";
+        var html = "<tr><td>" + softItem.id + "</td> <td>" + softItem.name + "</td> <td>" + softItem.distributor +
+            "</td> <td>" + softItem.version + "</td> <td>0</td> <td><a href='/software/" + softItem.id + "' class='button is-info'>View</a></td></tr>";
+        
         $("table tbody").append(html);
     }
 });

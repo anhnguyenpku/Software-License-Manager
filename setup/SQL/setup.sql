@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS `slm_software` (
   `id` VARCHAR(10) NOT NULL COMMENT '',
   `name` TEXT NULL COMMENT '',
   `distributor` TEXT NULL COMMENT '',
+  `lastVersion` VARCHAR(10) NULL COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
 

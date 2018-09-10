@@ -1,0 +1,37 @@
+<script>var sid = "{{sid}}";</script>
+<h1 class="title is-2">{{software-name}}</h1>
+
+<h1 class="title is-3">Info <a id="editBtn" class="button is-small is-success">Edit</a></h1>
+<form id="EditForm" action="/software/{{sid}}" method="POST" encType="multipart/form-data">
+    <div class="field column is-6" style="margin-bottom:0px;">
+            <label class="label">Software Name</label>
+            <div class="control">
+                <input disabled class="input" type="text" placeholder="Name" name="name" value="{{software-name}}">
+            </div>
+        </div>
+        <div class="field column is-6" style="margin-bottom:0px;">
+            <label class="label">Distributor (Author or Company)
+            </label>
+            <div class="control">
+                <input disabled class="input" type="text" placeholder="Distributor" name="distributor" value="{{software-distributor}}">
+            </div>
+        </div>
+        <div class="column is-6" style="margin-bottom:0px;">
+            <div id="submit" class="buttons is-right is-hidden">
+                <button class="button is-info">Save</button>
+            </div>
+        </div>
+</form>
+
+<h1 class="title is-3">Versions <a class="button is-small is-success">Add</a></h1>
+<table class="table is-striped is-hoverable">
+    <thead>
+        <th>Id</th>
+        <th>Version Label</th>
+        <th>License Keys</th>
+        <th></th>
+    </thead>
+    <tbody>
+    
+    </tbody>
+</table>

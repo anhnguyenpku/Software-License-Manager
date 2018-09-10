@@ -2,6 +2,7 @@
 const express = require('express');
 const https = require('https');
 const http = require('http');
+const SqlScape = require('sqlstring').escape;
 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -110,7 +111,38 @@ web.post("/software/add", async function(req,res)
 
     app.FileSystem.RegisterSofwareVersion(software,distributor,version,file);
 
-    res.redirect("/software/add");
+    res.redirect("/software");
+});
+
+web.post("/software/:id",function(req,res)
+{
+    app.Database.Query("UPDATE `slm_software` SET `name`=" + SqlScape(req.body.name) + ", `distributor`=" + SqlScape(req.body.distributor) + 
+        " WHERE `id`=" + SqlScape(req.params.id),function(results,fields,err)
+    {
+        if(err) app.Error("WebServer",err.message);
+        res.redirect("/software/" + req.params.id);
+    });
+});
+
+web.get("/software/:id",function(req,res)
+{
+    app.Database.Query("SELECT * FROM `slm_software` WHERE `id`=" + SqlScape(req.params.id),function(results,fields,err)
+    {
+        if(err)
+        {
+            app.Error("Webserver (/software/:id)", err.message);
+            res.redirect("/software");
+            return;
+        }
+        else if(results.length == 0)
+        {
+            res.redirect("/software");
+            return;
+        }
+
+        res.send(builder.BuildPage("SoftwareItem",
+            {"softpanel":"is-active","title":"Software - " + results[0].name,"software-name":results[0].name,"software-distributor":results[0].distributor, "sid":req.params.id}));
+    });
 });
 
 //Insecure Web Routes
