@@ -42,11 +42,20 @@ class TemplateBuilder
         return output;
     }
 
+    BuildErrorPage(code)
+    {
+        this.Refresh();
+        return this.Error["e" + code];
+    }
+
     Refresh()
     {
         //Page Templates
         this.MainTemplate = fs.readFileSync( templateFolder + "template.html").toString();
         this.LoginTemplate = fs.readFileSync(templateFolder + "loginTemplate.html").toString();
+
+        this.Error = {};
+        this.Error.e404 = fs.readFileSync(templateFolder + "404.html").toString();
 
         //Components
         this.MenuTemplate = fs.readFileSync(templateFolder + "menu.html").toString();

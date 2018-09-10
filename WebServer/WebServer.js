@@ -29,7 +29,6 @@ web.use(CheckAuthentication);
 web.use(bodyParser.urlencoded({ extended: true }));
 web.use(bodyParser.json());
 web.use(fileUpload());
-//web.use(busboyBodyParser());
 
 //CheckAuthentication
 async function CheckAuthentication(req,res,next)
@@ -150,6 +149,11 @@ web.get("/software/:id",function(req,res)
 web.all("/login",async function(req,res)
 {
     res.send(builder.BuildLoginPage({}));
+});
+
+web.all("*",function(req,res)
+{
+    res.status(404).send(builder.BuildErrorPage(404));
 });
 
 module.exports = {"StartServer": StartServer};
