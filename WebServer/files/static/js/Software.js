@@ -18,5 +18,11 @@ socket.on("software.list",function(list)
             "</td> <td>" + softItem.version + "</td> <td>0</td> <td><a href='/software/" + softItem.id + "' class='button is-info'>View</a></td></tr>";
         
         $("table tbody").append(html);
+        $("#addSoftware").toggleClass("is-loading",false);
+
+        $("#addSoftware").click(function()
+        {
+            $("#softModal").toggleClass("is-active",true);
+        });
     }
 });

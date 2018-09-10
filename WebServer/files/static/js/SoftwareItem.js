@@ -18,5 +18,11 @@ socket.on("software.versions.list",function(list)
         var html = "<tr><td>" + version.id + "</td> <td>" + version.label + "</td> <td>0</td> <td><a class='button is-info'>View</a></td></tr>";
         
         $("table tbody").append(html);
+        $("#addVersion").toggleClass("is-loading",false);
+
+        $("#addVersion").click(function()
+        {
+            $("#versionModal").toggleClass("is-active",true);
+        });
     }
 });
