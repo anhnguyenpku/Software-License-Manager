@@ -113,6 +113,49 @@ web.post("/software/add", async function(req,res)
     res.redirect("/software");
 });
 
+web.get("/software/:sid/version/:vid",function(req,res)
+{
+    app.Database.Query("SELECT * FROM `slm_software` WHERE `id`=" + SqlScape(req.params.sid),function(software,fields,err)
+    {
+        if(err)
+        {
+            app.Error("Webserver", err.message);
+            res.redirect("/software");
+            return;
+        }
+        else if(software.length == 0)
+        {
+            res.redirect("/software");
+            return;
+        }
+
+        app.Database.Query("SELECT * FROM `slm_software_versions` WHERE `id`=" + SqlScape(req.params.vid),function(versions,fields,err)
+        {
+            res.send(builder.BuildPage("VersionItem",
+            {
+                "softpanel":"is-active",
+                "title": software[0].name + " " + versions[0].label,
+                "software-name":software[0].name,
+                "software-distributor":software[0].distributor,
+                "version-label":versions[0].label,
+                "sid":req.params.sid,
+                "vid": req.params.vid
+            }));
+        });
+    });
+});
+
+web.post("/software/:sid/version/:vid",function(req,res)
+{
+    app.Database.Query("UPDATE `slm_software_versions` SET `label`=" + SqlScape(req.body.label) + 
+        " WHERE `id`=" + SqlScape(req.params.vid),function(results,fields,err)
+    {
+        if(err) app.Error("WebServer",err.message);
+        res.redirect("/software/" + req.params.sid + "/version/" + req.params.vid);
+    });
+});
+
+
 web.post("/software/:id",function(req,res)
 {
     app.Database.Query("UPDATE `slm_software` SET `name`=" + SqlScape(req.body.name) + ", `distributor`=" + SqlScape(req.body.distributor) + 
@@ -129,7 +172,7 @@ web.get("/software/:id",function(req,res)
     {
         if(err)
         {
-            app.Error("Webserver (/software/:id)", err.message);
+            app.Error("Webserver", err.message);
             res.redirect("/software");
             return;
         }

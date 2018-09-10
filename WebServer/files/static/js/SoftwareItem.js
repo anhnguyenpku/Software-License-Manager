@@ -15,7 +15,8 @@ socket.on("software.versions.list",function(list)
     {
         const version = list[i];
         
-        var html = "<tr><td>" + version.id + "</td> <td>" + version.label + "</td> <td>0</td> <td><a class='button is-info'>View</a></td></tr>";
+        var html = "<tr><td>" + version.id + "</td> <td>" + version.label + "</td> <td>0</td> <td>" +
+            "<a href='/software/" + sid + "/version/" + version.id + "' class='button is-info'>View</a></td></tr>";
         
         $("table tbody").append(html);
         $("#addVersion").toggleClass("is-loading",false);

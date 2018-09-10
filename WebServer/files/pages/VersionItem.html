@@ -1,0 +1,32 @@
+<script>
+    var sid = "{{sid}}";
+    var vid = "{{vid}}";
+</script>
+
+<h1 class="title is-2">{{software-name}} {{version-label}} <a href="/software/{{sid}}" class="button is-small is-danger">Back to {{software-name}}</a></h1>
+
+<h1 class="title is-3">Info <a id="editBtn" class="button is-small is-success">Edit</a></h1>
+<form id="EditForm" action="/software/{{sid}}/version/{{vid}}" method="POST" encType="multipart/form-data">
+    <div class="field column is-6" style="margin-bottom:0px;">
+        <label class="label">Version Label</label>
+        <div class="control">
+            <input disabled class="input" type="text" placeholder="Name" name="label" value="{{version-label}}">
+        </div>
+    </div>
+    <div class="column is-6" style="margin-bottom:0px;">
+        <div id="submit" class="buttons is-right is-hidden">
+            <button class="button is-info">Save</button>
+        </div>
+    </div>
+</form>
+
+<h1 class="title is-3">Files <a id="uploadBtn" class="button is-small is-success is-loading">Upload</a></h1>
+<table id="filebrowser" class="table is-striped is-hoverable">
+    <thead>
+        <th>File Name</th>
+        <th>File Size</th>
+    </thead>
+    <tbody>
+    
+    </tbody>
+</table>
