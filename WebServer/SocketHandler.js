@@ -31,17 +31,19 @@ function RegisterEvents(socket)
         //TODO implement error casting
         app.Database.Query("SELECT * FROM `slm_software`",function(results,fields,err)
         {
-            let query = "";
+            let query = "SELECT * FROM `slm_software_versions` WHERE (";
             for (let i = 0; i < results.length; i++)
             {
                 const result = results[i];
                 
-                query += "SELECT * FROM `slm_software_versions` WHERE `id`='" + result.lastVersion + "' LIMIT 1;";
+                query += "`id`='" + result.lastVersion + "' OR ";
             }
+
+            query = query.substr(0,query.length - 4) + ");";
 
             app.Database.Query(query,function(versions,fields,err)
             {
-                for (let i = 0; i < results.length; i++)
+                for (let i = 0; i < versions.length; i++)
                 {
                     const version = versions[i];
                     results[i].version = version.label;
