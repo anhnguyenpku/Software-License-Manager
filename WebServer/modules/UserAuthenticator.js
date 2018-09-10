@@ -24,10 +24,10 @@ class UserAuthenticator
 
     async Authenticate(login, password, sessioninfo, callback)
     {
-        SqlScape(login);
-        SqlScape(password);
+        login = SqlScape(login);
+        password = SqlScape(password);
 
-        this.Database.Query("SELECT * FROM `slm_users` WHERE `login`='" + login + "'",function(results, fields, err)
+        this.Database.Query("SELECT * FROM `slm_users` WHERE `login`=" + login,function(results, fields, err)
         {
             if(err)
             {
@@ -87,7 +87,7 @@ class UserAuthenticator
 
     async ValidateCookie(cookie,sessioninfo,callback)
     {
-        SqlScape(cookie);
+        cookie = SqlScape(cookie);
 
         this.Database.Query("SELECT * FROM `slm_user_sessions` WHERE `cookie`='" + cookie + "' AND `ipadress`='" + sessioninfo.ip + "'",
         function(results,fields,err)
@@ -124,8 +124,8 @@ class UserAuthenticator
 
     async ChangePassword(oldPWD, newPWD)
     {
-        SqlScape(oldPWD);
-        SqlScape(newPWD);
+        oldPWD = SqlScape(oldPWD);
+        newPWD = SqlScape(newPWD);
     }
     
     GenerateKey(length)
