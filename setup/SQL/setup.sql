@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `slm_software` (
   `name` TEXT NULL COMMENT '',
   `distributor` TEXT NULL COMMENT '',
   `lastVersion` VARCHAR(10) NULL COMMENT '',
+  `date` TEXT NOT NULL COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
 
@@ -32,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `slm_software_versions` (
   `id` VARCHAR(10) NOT NULL COMMENT '',
   `label` TINYTEXT NOT NULL COMMENT '',
   `software` TINYTEXT NOT NULL COMMENT '',
+  `date` TEXT NOT NULL COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
 

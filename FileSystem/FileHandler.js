@@ -17,11 +17,15 @@ class FileHandler
         this.sidLen = parseInt(app.Settings.GetSetting("files.sidlen"));
     }
 
-    RegisterSofwareVersion(software, distributor, version, file)
+    RegisterSofwareVersion(software, distributor, version, file, callback)
     {
         this.SoftwareExists(software,function(exists,sid,err)
         {
-            if(err) return;
+            if(err)
+            {
+                callback(null,null);
+                return;
+            }
 
             if(!exists)
             {
@@ -30,16 +34,26 @@ class FileHandler
 
             //Generate VUID
             let vid = fh.GenerateId(fh.vidLen);
-            app.Database.QueryEmpty("INSERT INTO `slm_software_versions` (`id`, `label`, `software`) VALUES ('" + vid + "', " + SqlScape(version) + ", '" + sid + "');");
-
-            fs.mkdirSync(ContentFolder + sid + "/" + vid);
-
-            file.mv(ContentFolder + sid + "/" + vid + "/" + file.name,function(err)
+            app.Database.QueryEmpty("INSERT INTO `slm_software_versions` (`id`, `label`, `software`, `date`) VALUES ('" + vid + "', " + SqlScape(version) + ", '" +
+                sid + "', `date`='" + GenerateDate() + "');",function(r,f,err)
             {
                 if(err)
                 {
-                    app.Error("FileSystem", err.message);
+                    callback(null,null);
+                    return;
                 }
+
+                fs.mkdirSync(ContentFolder + sid + "/" + vid);
+
+                file.mv(ContentFolder + sid + "/" + vid + "/" + file.name,function(err)
+                {
+                    if(err)
+                    {
+                        app.Error("FileSystem", err.message);
+                    }
+
+                    callback(sid,vid);
+                });
             });
         });
     }
@@ -56,8 +70,7 @@ class FileHandler
         fs.mkdirSync(ContentFolder + sid);
 
         //Register in the database
-
-        app.Database.QueryEmpty("INSERT INTO `slm_software` (`id`, `name`, `distributor`) VALUES ('" + sid + "', " + software + " , " + distributor + ");");
+        app.Database.QueryEmpty("INSERT INTO `slm_software` (`id`, `name`, `distributor`, `date`) VALUES ('" + sid + "', " + software + " , " + distributor + ", '" + GenerateDate() + "');");
 
         return sid;
     }
@@ -118,3 +131,18 @@ class FileHandler
 const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 module.exports = FileHandler;
+
+function GenerateDate()
+{
+    let date = new Date();
+
+    let dateStr = date.getFullYear().toString() + zero(date.getMonth()+1).toString() + zero(date.getDate()).toString() +
+            zero(date.getHours()).toString() + zero(date.getMinutes()).toString() + zero(date.getSeconds()).toString();
+    
+    return dateStr;
+}
+
+function zero(n)
+{
+    return n<10 ? '0'+n : n;
+}

@@ -108,9 +108,37 @@ web.post("/software/add", async function(req,res)
     let distributor = req.body.distributor;
     let file = req.files.package;
 
-    app.FileSystem.RegisterSofwareVersion(software,distributor,version,file);
+    app.FileSystem.RegisterSofwareVersion(software,distributor,version,file,function(sid,vid)
+    {
+        res.redirect("/software/" + sid);
+    });
+});
 
-    res.redirect("/software");
+web.post("/software/:sid/version/add",function(req,res)
+{
+    app.Database.Query("SELECT * FROM `slm_software` WHERE `id`=" + SqlScape(req.params.sid),function(software,fields,err)
+    {
+        if(err) app.Error("WebServer",err.message);
+        if(software.length === 0)
+        {
+            res.redirect("/software");
+            return;
+        }
+
+        let soft = software[0];
+
+        app.FileSystem.RegisterSofwareVersion(soft.name,soft.distributor,req.body.label,req.files.package,function(sid,vid)
+        {
+            if(sid && vid)
+            {
+                res.redirect("/software/" + sid + "/version/" + vid);
+            }
+            else
+            {
+                res.redirect("/software/" + req.params.sid);
+            }
+        });
+    });
 });
 
 web.get("/software/:sid/version/:vid",function(req,res)
