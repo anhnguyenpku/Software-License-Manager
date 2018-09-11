@@ -14,4 +14,12 @@ $(document).ready(function() {
         console.log("ss");
         $(this).parent().parent().parent().toggleClass("is-active");
     });
+
+    $("input.file-input").change(function()
+    {
+        var splitFilePath = $(this).val().split('\\');
+        var filename = splitFilePath[splitFilePath.length - 1];
+
+        $(this).parent().children(".file-name").text(filename);
+    });
 });

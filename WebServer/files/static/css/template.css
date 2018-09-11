@@ -28,6 +28,12 @@
     margin-bottom: 25px;
 }
 
+.big-spacer
+{
+    margin-bottom: 100px;
+}
+
+
 .card.info
 {
     margin: .75rem;
@@ -54,4 +60,10 @@
 input:disabled
 {
     cursor: text !important;
+}
+
+.modal-card-head .modal-card-sub-title
+{
+    position: absolute;
+    top:50px;
 }
