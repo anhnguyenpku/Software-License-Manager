@@ -7,6 +7,11 @@ $(document).ready(function()
         $("form#EditForm input").prop("disabled",false);
         $("form#EditForm #submit").toggleClass("is-hidden",false);
     });
+
+    $(".version-submit").click(function()
+    {
+        $("form#versionform").submit();
+    });
 });
 
 socket.on("software.versions.list",function(list)
