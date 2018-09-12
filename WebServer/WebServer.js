@@ -33,11 +33,17 @@ web.use(fileUpload());
 //CheckAuthentication
 async function CheckAuthentication(req,res,next)
 {
-    //TODO: If no seskey and login page is requested don't validate
-
     //Check if user has a sessionkey ready
     if(!req.cookies['seskey'])
     {
+        //if the requested path is login
+        if(req.path === "/login")
+        {
+            //Serve the requested page
+            next();
+            return;
+        }
+
         //No session key: redirect the user to the login page
         res.redirect("/login");
         return;
