@@ -32,10 +32,15 @@ class FileHandler
                 sid = fh.RegisterSoftware(software,distributor);
             }
 
-            //Generate VUID
+            //Generate VID
             let vid = fh.GenerateId(fh.vidLen);
-            app.Database.QueryEmpty("INSERT INTO `slm_software_versions` (`id`, `label`, `software`, `date`) VALUES ('" + vid + "', " + SqlScape(version) + ", '" +
-                sid + "', `date`='" + GenerateDate() + "');",function(r,f,err)
+
+            let insertQuery = "INSERT INTO `slm_software_versions` (`id`, `label`, `software`, `date`) VALUES ('" + vid + "', " + SqlScape(version) + ", '" +
+            sid + "', `date`='" + GenerateDate() + "');";
+
+            let updateQuery = "UPDATE `slm_software` SET `lastVersion`='" + vid + "' WHERE `id`='" + sid + "';";
+
+            app.Database.QueryEmpty(insertQuery + updateQuery,function(r,f,err)
             {
                 if(err)
                 {
