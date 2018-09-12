@@ -29,7 +29,7 @@ function RegisterEvents(socket)
     socket.on("software.list",function()
     {
         //TODO implement error casting
-        app.Database.Query("SELECT * FROM `slm_software`",function(results,fields,err)
+        app.Database.Query("SELECT * FROM `slm_software` ORDER BY `date` DESC",function(results,fields,err)
         {
             let done = false;
             for (let i = 0; i < results.length; i++)
@@ -65,7 +65,7 @@ function RegisterEvents(socket)
 
     socket.on("software.versions.list",function(sid)
     {
-        app.Database.Query("SELECT * FROM `slm_software_versions` WHERE `software`=" + SqlScape(sid),function(results,fields,err)
+        app.Database.Query("SELECT * FROM `slm_software_versions` WHERE `software`=" + SqlScape(sid) + " ORDER BY `date` DESC",function(results,fields,err)
         {
             if(err)
             {
