@@ -31,26 +31,35 @@ function RegisterEvents(socket)
         //TODO implement error casting
         app.Database.Query("SELECT * FROM `slm_software`",function(results,fields,err)
         {
-            let query = "SELECT * FROM `slm_software_versions` WHERE (";
+            let done = false;
             for (let i = 0; i < results.length; i++)
             {
                 const result = results[i];
-                
-                query += "`id`='" + result.lastVersion + "' OR ";
-            }
+                let query = "SELECT * FROM `slm_software_versions` WHERE `id`='" + result.lastVersion + "';";
 
-            query = query.substr(0,query.length - 4) + ");";
-
-            app.Database.Query(query,function(versions,fields,err)
-            {
-                for (let i = 0; i < versions.length; i++)
+                app.Database.QuerySync(query,function(versions,fields,err)
                 {
-                    const version = versions[i];
-                    results[i].version = version.label;
-                }
+                    if(err)
+                    {
+                        app.Error("SocketHandler", err.message);
 
-                socket.emit("software.list",results);
-            });
+                        results[i].version = "No Versions Found";
+                    }
+                    else if(versions.length === 0)
+                    {
+                        results[i].version = "No Versions Found";
+                    }
+                    else
+                    {
+                        results[i].version = versions[0].label;
+                    }
+
+                    if(i === results.length -1)
+                    {
+                        socket.emit("software.list",results);
+                    }
+                });
+            }
         });
     });
 
