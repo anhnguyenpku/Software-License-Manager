@@ -127,17 +127,30 @@ function StartServer(appHandler)
 
 web.all("/",async function(req,res)
 {
-    res.send(builder.BuildPage("Dashboard",{"softpanel":"is-active"}));
+    res.send(builder.BuildPage("Dashboard",{"softpanel":"is-active"},{}));
 });
 
 web.all("/software",async function(req,res)
 {
-    res.send(builder.BuildPage("Software",{"softpanel":"is-active"}));
+    res.send(builder.BuildPage("Software",
+    {
+        "softpanel":"is-active"
+    }, 
+    {
+        "subMenu":"Software"
+    }));
 });
 
 web.get("/software/add",async function(req,res)
 {
-    res.send(builder.BuildPage("Software",{"softpanel":"is-active","modal-active":"is-active"}));
+    res.send(builder.BuildPage("Software",
+    {
+        "softpanel":"is-active",
+        "modal-active":"is-active"
+    }, 
+    {
+        "subMenu":"Software"
+    }));
 });
 
 web.post("/software/add", async function(req,res)
@@ -206,7 +219,7 @@ web.post("/software/:sid/version/add",function(req,res)
     });
 });
 
-web.get("/software/:sid/version/:vid",function(req,res)
+web.get("/software/:sid/version/:vid",async function(req,res)
 {
     //Get all Info of the specified software from the Database
     app.Database.Query("SELECT * FROM `slm_software` WHERE `id`=" + SqlScape(req.params.sid),function(software,fields,err)
@@ -241,12 +254,15 @@ web.get("/software/:sid/version/:vid",function(req,res)
                 "version-label":versions[0].label,
                 "sid":req.params.sid,
                 "vid": req.params.vid
+            }, 
+            {
+                "subMenu":"Software"
             }));
         });
     });
 });
 
-web.post("/software/:sid/version/:vid",function(req,res)
+web.post("/software/:sid/version/:vid",async function(req,res)
 {
     //Update the software version info
     app.Database.Query("UPDATE `slm_software_versions` SET `label`=" + SqlScape(req.body.label) + 
@@ -307,13 +323,21 @@ web.get("/software/:id",function(req,res)
         }
 
         res.send(builder.BuildPage("SoftwareItem",
-            {"softpanel":"is-active","title":"Software - " + results[0].name,"software-name":results[0].name,"software-distributor":results[0].distributor, "sid":req.params.id}));
+            {
+                "softpanel":"is-active","title":"Software - " + results[0].name,
+                "software-name":results[0].name,
+                "software-distributor":results[0].distributor,
+                "sid":req.params.id
+            }, 
+            {
+                "subMenu":"Software"
+            }));
     });
 });
 
 web.get("/settings",function(req,res)
 {
-    res.send(builder.BuildPage("Settings",{}));
+    res.send(builder.BuildPage("Settings",{},{}));
 });
 
 //Insecure Web Routes

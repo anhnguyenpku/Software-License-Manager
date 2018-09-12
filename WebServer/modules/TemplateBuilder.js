@@ -3,6 +3,7 @@ const mustache = require('mustache');
 
 const templateFolder = __dirname + "/../files/templates/";
 const pagesFolder = __dirname + "/../files/pages/";
+const submenuFolder = __dirname + "/../files/menus/";
 
 class TemplateBuilder
 {
@@ -11,7 +12,13 @@ class TemplateBuilder
         this.Refresh();
     }
 
-    BuildPage(page,options)
+    /**
+     * Build the requested Page.
+     * @param {String} page The name of the page (Case Sesnitive).
+     * @param {Object} buildOptions Build Options are options that influence the built page.
+     * @param {Object} options Options that influence what the builder does.
+     */
+    BuildPage(page,buildOptions,options)
     {
         this.Refresh();
 
@@ -20,24 +27,34 @@ class TemplateBuilder
         let menuoptions = {};
         menuoptions[page] = "is-active";
 
-        if(!options.title) options.title = page;
-        options.menu = mustache.to_html(this.MenuTemplate,menuoptions);
+        if(!buildOptions.title) buildOptions.title = page;        
 
-        if(fs.existsSync(__dirname + "/../files/static/js/" + page + ".js")) options.scripts = '<script src="/js/' + page + '.js"></script>';
-        if(fs.existsSync(__dirname + "/../files/static/css/" + page + ".css")) options.styles = '<link rel="stylesheet" href="/css/' + page + '.css">';
+        if(options)
+        {
+            if(options.subMenu)
+            {
+                menuoptions[options.subMenu] = "is-active";
+                menuoptions[options.subMenu.toLowerCase() + "-sub-menu"] = fs.readFileSync(submenuFolder + options.subMenu + ".html").toString();
+            }
+        }
 
-        options.page = mustache.render(pageHtml,options);
+        buildOptions.menu = mustache.to_html(this.MenuTemplate,menuoptions);
 
-        let output = mustache.to_html(this.MainTemplate,options);
+        if(fs.existsSync(__dirname + "/../files/static/js/" + page + ".js")) buildOptions.scripts = '<script src="/js/' + page + '.js"></script>';
+        if(fs.existsSync(__dirname + "/../files/static/css/" + page + ".css")) buildOptions.styles = '<link rel="stylesheet" href="/css/' + page + '.css">';
+
+        buildOptions.page = mustache.render(pageHtml,buildOptions);
+
+        let output = mustache.to_html(this.MainTemplate,buildOptions);
 
         return output;
     }
     
-    BuildLoginPage(options)
+    BuildLoginPage(buildOptions)
     {
         this.Refresh();
 
-        let output = mustache.to_html(this.LoginTemplate,options);
+        let output = mustache.to_html(this.LoginTemplate,buildOptions);
 
         return output;
     }
