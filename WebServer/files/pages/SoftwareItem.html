@@ -1,6 +1,13 @@
 <script>var sid = "{{sid}}";</script>
 
-<h1 class="title is-2">{{software-name}} <a href="/software" class="button is-small is-danger">Back to Software</a></h1>
+<h1 class="title is-2">{{software-name}}</h1>
+
+<nav class="breadcrumb has-triangles-separator" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="/software">Software</a></li>
+        <li class="is-active"><a href="/software/{{sid}}" aria-current="page">{{software-name}}</a></li>
+    </ul>
+</nav>
 
 <h1 class="title is-3">Info <a id="editBtn" class="button is-small is-success">Edit</a></h1>
 <form id="EditForm" action="/software/{{sid}}" method="POST" encType="multipart/form-data">
@@ -36,6 +43,33 @@
     
     </tbody>
 </table>
+
+<div class="spacer"></div>
+
+<h1 class="title is-3">Key Settings</h1>
+
+<form id="keyForm" action="" method="POST" encType="multipart/form-data">
+    <div class="field column is-6" style="margin-bottom:0px;">
+        <label class="label">Key Length</label>
+        <div class="control">
+            <input disabled class="input" type="text" placeholder="Key Length" name="length" value="10" readonly>
+        </div>
+    </div>
+    <div class="field column is-6" style="margin-bottom:0px;">
+        <label class="label">Version Specific Keys</label>
+        <div class="control">
+            <label class="checkbox">
+                <input disabled type="checkbox" value="false" name="versionkey">
+                Enabled
+            </label>
+        </div>
+    </div>
+    <div class="column is-6" style="margin-bottom:0px;">
+        <div id="submit" class="buttons is-right is-hidden">
+            <button class="button is-info">Save</button>
+        </div>
+    </div>
+</form>
 
 <div class="big-spacer"></div>
 

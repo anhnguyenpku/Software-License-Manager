@@ -79,3 +79,28 @@ input:disabled
     position: absolute;
     top:50px;
 }
+
+.content li
+{
+    margin-top: .25em;
+}
+
+.breadcrumb
+{
+    position: relative;
+    top: -20px;
+}
+
+.breadcrumb.has-triangles-separator ul li:first-child
+{
+    margin-top: 12px;
+}
+
+.breadcrumb.has-triangles-separator li+li::before
+{
+    content: ">";
+    font-size: 25px;
+
+    margin-left: -10px;
+    margin-right: -5px;
+}
