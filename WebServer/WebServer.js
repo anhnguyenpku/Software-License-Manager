@@ -33,27 +33,36 @@ web.use(fileUpload());
 //CheckAuthentication
 async function CheckAuthentication(req,res,next)
 {
-    if(req.path === "/login")
-    {
-        next();
-        return;
-    }
-    else if(!req.cookies['seskey'])
+    if(!req.cookies['seskey'])
     {
         res.redirect("/login");
         return;
     }
 
     let sesinfo = new SessionInfo(req);
+
     authenticator.ValidateCookie(sesinfo.cookies['seskey'],sesinfo,function(valid,err)
     {
         if(valid)
         {
+            if(req.path === "/login")
+            {
+                res.redirect("/");
+                return;
+            }
+
             next();
         }
         else
         {
-            res.redirect("/login");
+            if(req.path === "/login")
+            {
+                next();
+            }
+            else
+            {
+                res.redirect("/login");
+            }
         }
     });
 }
