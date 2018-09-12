@@ -25,13 +25,12 @@ class UserAuthenticator
     async Authenticate(login, password, sessioninfo, callback)
     {
         login = SqlScape(login);
-        password = SqlScape(password);
 
         this.Database.Query("SELECT * FROM `slm_users` WHERE `login`=" + login,function(results, fields, err)
         {
             if(err)
             {
-                callback(null,false,null);
+                callback(null,false,err.message);
                 return;
             }
             else if(results.length > 1)
@@ -67,7 +66,7 @@ class UserAuthenticator
             }
             else
             {
-                callback(null,false,null);
+                callback(null,false,"Wrong password!");
             }
         });
     }
@@ -89,7 +88,7 @@ class UserAuthenticator
     {
         cookie = SqlScape(cookie);
 
-        this.Database.Query("SELECT * FROM `slm_user_sessions` WHERE `cookie`='" + cookie + "' AND `ipadress`='" + sessioninfo.ip + "'",
+        this.Database.Query("SELECT * FROM `slm_user_sessions` WHERE `cookie`=" + cookie + " AND `ipadress`='" + sessioninfo.ip + "'",
         function(results,fields,err)
         {
             if(err)
