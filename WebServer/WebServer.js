@@ -311,6 +311,11 @@ web.get("/software/:id",function(req,res)
     });
 });
 
+web.get("/settings",function(req,res)
+{
+    res.send(builder.BuildPage("Settings",{}));
+});
+
 //Insecure Web Routes
 
 web.all("/login",async function(req,res)

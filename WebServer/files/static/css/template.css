@@ -18,6 +18,18 @@
     vertical-align: middle;
 }
 
+.is-center
+{
+    text-align: center;
+}
+
+.is-forced-center
+{
+    position: relative;
+    left: 50%;
+    transform: translate(-50%,0);
+}
+
 .spacer
 {
     margin-bottom: 50px;

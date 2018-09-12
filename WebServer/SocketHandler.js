@@ -75,6 +75,14 @@ function RegisterEvents(socket)
             socket.emit("software.versions.list",results);
         });
     });
+
+    socket.on("settings.list",function()
+    {
+        app.Database.Query("SELECT * FROM `slm_settings`",function(results,fields,err)
+        {
+            socket.emit("settings.list",results);
+        });
+    });
 }
 
 function RegisterLoginPageEvents(socket)
