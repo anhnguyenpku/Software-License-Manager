@@ -37,7 +37,7 @@ function RegisterEvents(socket)
                 const result = results[i];
                 let query = "SELECT * FROM `slm_software_versions` WHERE `id`='" + result.lastVersion + "';";
 
-                app.Database.QuerySync(query,function(versions,fields,err)
+                app.Database.Query(query,function(versions,fields,err)
                 {
                     if(err)
                     {
