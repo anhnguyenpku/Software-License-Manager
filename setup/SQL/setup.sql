@@ -47,3 +47,5 @@ INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.cookiel
 
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('files.sidlen', '8');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('files.vidlen', '8');
+
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('web.apiroute', 'api');

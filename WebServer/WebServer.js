@@ -15,12 +15,12 @@ const UserAuthenticator = require('./modules/UserAuthenticator');
 const SessionInfo = require('./modules/SessionInfo').SessionInfo;
 
 //Objects
-let builder = new TemplateBuilder();
-let authenticator;
+var builder = new TemplateBuilder();
+var authenticator;
 
-let web = express();
-let server;
-let app;
+var web = express();
+var server;
+var app;
 
 //Express extensions
 web.use(express.static(__dirname + "/files/static"));
@@ -33,6 +33,12 @@ web.use(fileUpload());
 //CheckAuthentication
 async function CheckAuthentication(req,res,next)
 {
+    if(req.path.includes(app.Settings.GetSetting("web.apiroute")))
+    {
+        next();
+        return;
+    }
+
     //Check if user has a sessionkey ready
     if(!req.cookies['seskey'])
     {
@@ -92,6 +98,10 @@ function StartServer(appHandler)
 {
     //save th apphandler reference in the module
     app = appHandler;
+
+    //Register Api Route and 404 Route
+    web.all("/" + app.Settings.GetSetting("web.apiroute") ,ApiHandler);
+    web.all("*", page404);
 
     //Initialize authenticator
     authenticator = new UserAuthenticator(app.Database,app.Settings);
@@ -308,11 +318,17 @@ web.all("/login",async function(req,res)
     res.send(builder.BuildLoginPage({}));
 });
 
+function ApiHandler(req,res)
+{
+    res.set('Content-Type', 'application/json; charset=utf-8');
+    res.send(({"ERRROR": "Api calls cannot be made yet."}));
+}
+
 //Error Pages
 
-web.all("*",function(req,res)
+function page404(req,res)
 {
     res.status(404).send(builder.BuildErrorPage(404));
-});
+}
 
 module.exports = {"StartServer": StartServer};
