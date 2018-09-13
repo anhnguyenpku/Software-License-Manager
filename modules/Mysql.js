@@ -80,7 +80,7 @@ async function QueryEmpty(querystring)
  * @param {Array} fields 
  * @param {Error} err 
  */
-function Callback(results,fields,err);
+function Callback(results,fields,err) {};
 
 function Stop()
 {
