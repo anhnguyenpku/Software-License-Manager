@@ -5,8 +5,20 @@ Reload();
 
 function Save()
 {
+    let configstr = JSON.stringify(config);
 
+    if(fs.existsSync("dev-config.json"))
+    {
+        fs.writeFileSync("dev-config.json",configstr);
+    }
+    else
+    {
+        fs.writeFileSync("config.json",configstr);
+    }
+
+    Reload();
 }
+
 /**
  * Reload the config file
  */
