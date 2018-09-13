@@ -14,6 +14,11 @@ function Start(config, logger)
     pool = mysql.createPool(config);
 }
 
+/**
+ * Query something from the database asynchronously with a callback.
+ * @param {String} querystring A SQL string to query to the database.
+ * @param {Callback} callback The callback method
+ */
 async function Query(querystring, callback)
 {
     pool.getConnection(function(err,con)
@@ -41,7 +46,10 @@ async function Query(querystring, callback)
     });
 
 }
-
+/**
+ * Query something from the database asynchronously without a callback.
+ * @param {String} querystring A SQL string to query to the database.
+ */
 async function QueryEmpty(querystring)
 {
     pool.getConnection(function(err,con)
@@ -65,6 +73,14 @@ async function QueryEmpty(querystring)
     });
 
 }
+
+/**
+ * 
+ * @param {Array} results 
+ * @param {Array} fields 
+ * @param {Error} err 
+ */
+function Callback(results,fields,err);
 
 function Stop()
 {

@@ -7,7 +7,9 @@ function Save()
 {
 
 }
-
+/**
+ * Reload the config file
+ */
 function Reload()
 {
     if(fs.existsSync("dev-config.json"))
@@ -24,6 +26,9 @@ function Reload()
     config.ReadSSL = ReadSSL;
 }
 
+/**
+ * Read the ssl certificates
+ */
 function ReadSSL()
 {
     let ssl = {

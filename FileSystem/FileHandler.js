@@ -17,6 +17,14 @@ class FileHandler
         this.sidLen = parseInt(app.Settings.GetSetting("files.sidlen"));
     }
 
+    /**
+     * Register or create a software version, registers new software if the software doesn't exist.
+     * @param {String} software The name of the software
+     * @param {String} distributor The name of the software distributor
+     * @param {String} version The version label
+     * @param {Object} file The files to add to the filesystem
+     * @param {callbacks.RegisterSoftwareVersion} callback A callback method
+     */
     RegisterSofwareVersion(software, distributor, version, file, callback)
     {
         this.SoftwareExists(software,function(exists,sid,err)
@@ -55,6 +63,9 @@ class FileHandler
                     if(err)
                     {
                         app.Error("FileSystem", err.message);
+
+                        callback(null,null);
+                        return;
                     }
 
                     callback(sid,vid);
@@ -63,6 +74,11 @@ class FileHandler
         });
     }
 
+    /**
+     * Register a new software
+     * @param {String} software Name of the software
+     * @param {String} distributor Name of the software distributor
+     */
     RegisterSoftware(software,distributor)
     {
         //SqlScape
@@ -80,6 +96,11 @@ class FileHandler
         return sid;
     }
 
+    /**
+     * Check if a software exists already
+     * @param {String} software Name of the software
+     * @param {callbacks.SoftwareExists} callback A callback method
+     */
     SoftwareExists(software,callback)
     {
         software = SqlScape(software);
@@ -117,6 +138,11 @@ class FileHandler
         //Send File
     }
 
+    /**
+     * Generate a random string
+     * @param {Number} length The lenght of the random string
+     * @returns String
+     */
     GenerateId(length)
     {
         let rndStr = "";
@@ -137,6 +163,25 @@ const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
 
 module.exports = FileHandler;
 
+var callbacks = {};
+
+/**
+ * @param {String} sid Software Id
+ * @param {String} vid Verrsion Id
+ */
+callbacks.RegisterSoftwareVersion = function(sid,vid) {};
+
+/**
+ * @param {Boolean} exists Does the software exist
+ * @param {String} sid Software Id
+ * @param {Error} err Error
+ */
+callbacks.SoftwareExists = function(exists,sid,err) {};
+
+/**
+ * Get a date string
+ * @returns String
+ */
 function GenerateDate()
 {
     let date = new Date();

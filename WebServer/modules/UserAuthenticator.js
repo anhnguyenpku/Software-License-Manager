@@ -22,6 +22,13 @@ class UserAuthenticator
         auth = this;
     }
 
+    /**
+     * Authenticate the user.
+     * @param {String} login A string with the login of the user.
+     * @param {String} password A hashed string from the client.
+     * @param {SessionInfo} sessioninfo The session info of the user.
+     * @param {callbacks.Authenticate} callback A callback method.
+     */
     async Authenticate(login, password, sessioninfo, callback)
     {
         login = SqlScape(login);
@@ -71,6 +78,12 @@ class UserAuthenticator
         });
     }
 
+    /**
+     * Register a user
+     * @param {String} login A string with the login of the user.
+     * @param {String} password A hashed string from the client.
+     * @param {callbacks.Register} callback A callback method.
+     */
     async Register(login, password,callback)
     {
         login = SqlScape(login);
@@ -84,6 +97,12 @@ class UserAuthenticator
         });
     }
 
+    /**
+     * 
+     * @param {String} cookie The cookie from the user.
+     * @param {SessionInfo} sessioninfo The session info of the user.
+     * @param {callbacks.ValidateCookie} callback A callback method.
+     */
     async ValidateCookie(cookie,sessioninfo,callback)
     {
         cookie = SqlScape(cookie);
@@ -121,12 +140,22 @@ class UserAuthenticator
         });
     }
 
+    /**
+     * NOT YET IMPLEMENTED
+     * @param {String} oldPWD 
+     * @param {String} newPWD 
+     */
     async ChangePassword(oldPWD, newPWD)
     {
         oldPWD = SqlScape(oldPWD);
         newPWD = SqlScape(newPWD);
     }
     
+    /**
+     * Generate a random key
+     * @param {Number} length The length of the key.
+     * @returns String
+     */
     GenerateKey(length)
     {
         function RandomLetter()
@@ -148,6 +177,11 @@ class UserAuthenticator
         return rndStr;
     }
 
+    /**
+     * Secure a password so it can be safley added to the database
+     * @param {String} password Password to secure.
+     * @returns String
+     */
     SecurePassword(password)
     {
         //Generate Salt
@@ -158,12 +192,24 @@ class UserAuthenticator
         return output;
     }
 
+    /**
+     * Rebuild the password to check if it matches the one from the database.
+     * @param {String} password Password to hash
+     * @param {String} salt Salt key to hash with
+     * @returns String
+     */
     GetNakedHash(password,salt)
     {
         let hash = crypto.pbkdf2Sync(password,salt,this.iterations,this.secretLength,'sha512').toString('hex');
         return hash;
     }
 
+    /**
+     * HMAC sha512 a password
+     * @param {String} key The key to HMAC with
+     * @param {String} password Password to HMAC
+     * @returns String
+     */
     Hmac(key,password)
     {
         let hmac = crypto.createHmac('sha512',key);
@@ -172,5 +218,29 @@ class UserAuthenticator
         return hmac.digest('hex');
     }
 }
+
+var callbacks = {};
+
+/**
+ * callback method
+ * @param {string} cookie A cookie string that the user's browser will add to validate that he/she logged in.
+ * @param {Boolean} success Boolean thzt says if the authentication was a success
+ * @param {Error} err Error
+ */
+callbacks.Authenticate = function(cookie,success,err) {};
+
+/**
+ * callback method
+ * @param {Error} err Error
+ */
+callbacks.Register = function(err) {};
+
+/**
+ * callback method
+ * @param {Boolean} success Boolean thzt says if the validation was a success.
+ * @param {Error} err Error
+ */
+callbacks.ValidateCookie = function(success,err) {};
+
 
 module.exports = UserAuthenticator;

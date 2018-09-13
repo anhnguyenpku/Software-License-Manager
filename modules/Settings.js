@@ -19,6 +19,10 @@ class Settings
         });
     }
 
+    /**
+     * Gives the setting value of the requested key.
+     * @param {String} key The setting key
+     */
     GetSetting(key)
     {
         let output = {"key": key, "value":""};

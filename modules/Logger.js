@@ -1,3 +1,8 @@
+/**
+ * Log a message
+ * @param {String} source The class or object this function is called from
+ * @param {String} message The message
+ */
 function Log(source,message)
 {
     var timestamp = GetTime();
@@ -5,6 +10,11 @@ function Log(source,message)
     console.log( '[' + timestamp + '] ' + '\x1b[33m' + source + "\x1b[0m" , ": " + message);
 }
 
+/**
+ * Log an error message
+ * @param {String} source The class or object this function is called from
+ * @param {String} message The error message
+ */
 function Error(source,message)
 {
     var timestamp = GetTime();
