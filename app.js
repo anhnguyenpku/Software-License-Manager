@@ -12,6 +12,14 @@ let app = new AppHandler();
 app.Logger = logger;
 logger.Log("Loader","Loaded AppHandler");
 
+//Load FileBrowser Class
+const FileBrowser = require('./FileSystem/FileBrowser');
+
+app.FileBrowser = FileBrowser;
+app.BaseFileBrowser = new FileBrowser(__dirname + "/Content");
+
+logger.Log("Loader", "Loaded FileBrowser");
+
 //Load Config
 const config = require('./modules/ConfigHandler');
 

@@ -9,6 +9,8 @@ class AppHandler
         this.Logger;
         this.Settings;
         this.FileSystem;
+        this.FileBrowser;
+        this.BaseFileBrowser;
     }
 
     Log(source, message)
