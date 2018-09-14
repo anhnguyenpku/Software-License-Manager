@@ -104,3 +104,8 @@ input:disabled
     margin-left: -10px;
     margin-right: -5px;
 }
+
+.has-small-text
+{
+    font-size: 0.75rem;
+}

@@ -1,4 +1,6 @@
 const fs = require('fs');
+const os = require('os');
+const ip = require('ip');
 const mustache = require('mustache');
 
 const templateFolder = __dirname + "/../files/templates/";
@@ -38,6 +40,7 @@ class TemplateBuilder
             }
         }
 
+
         buildOptions.menu = mustache.to_html(this.MenuTemplate,menuoptions);
 
         if(fs.existsSync(__dirname + "/../files/static/js/" + page + ".js")) buildOptions.scripts = '<script src="/js/' + page + '.js"></script>';
@@ -65,6 +68,55 @@ class TemplateBuilder
         return this.Error["e" + code];
     }
 
+    BuildSystemInfoOptions(versionInfo)
+    {
+        let buildOptions = versionInfo;
+        
+        //SLM Info Part
+        let authorHtml = "<ul>";
+
+        for (let i = 0; i < buildOptions.Authors.length; i++)
+        {
+            const author = buildOptions.Authors[i];
+            
+            authorHtml += "<li> <a href='" + author.Link + "'>" + author.Name + "</a> <span class='has-small-text'>aka " + author.Alias + "</span></li>";
+        }
+
+        authorHtml += "</ul>";
+        buildOptions["Authors-html"] = authorHtml;
+
+        //OS Info Part
+
+        let cpu = os.cpus()[0];
+        let arch = os.arch();
+
+        let time = os.uptime();
+        let hours = Math.floor(time / 60 / 60);
+        time -= hours * 60 * 60;
+        let minutes = Math.floor(time / 60);
+        time -= minutes * 60;
+        let secconds = Math.floor(time);
+        let uptime = hours + "h " + minutes + "m " + secconds + "s";
+
+        let platforms = {"win32":"Windows", "linux": "Linux", "darwin": "Mac OS"};
+
+        let osHtml = "System <strong>" + os.hostname() + "</strong>";
+        osHtml += "<br/>";
+        osHtml += "Running <strong>" + platforms[os.platform()] + " " + os.release() + " " + arch + "</strong>";
+        osHtml += "<br/>";
+        osHtml += "Has been running for <strong>" + uptime + "</strong>";
+        osHtml += '<div class="small-spacer"></div>';
+        osHtml += "CPU: <strong>" + cpu.model + "</strong>";
+        osHtml += "<br/>";
+        osHtml += "Memory: <strong>" + Math.round(os.totalmem() / 1024 / 1024 / 1024).toString() + ".0 GB</strong>";
+        osHtml += '<div class="small-spacer"></div>';
+        osHtml += "Local ip: <strong>" + ip.address() + "</strong>";
+
+        buildOptions["os"] = osHtml;
+        
+        return buildOptions;
+    }
+
     Refresh()
     {
         //Page Templates
@@ -74,7 +126,7 @@ class TemplateBuilder
         this.Error = {};
         this.Error.e404 = fs.readFileSync(templateFolder + "404.html").toString();
 
-        //Components
+        //Menus
         this.MenuTemplate = fs.readFileSync(templateFolder + "menu.html").toString();
     }
 }

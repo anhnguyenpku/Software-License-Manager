@@ -33,6 +33,9 @@ function Reload()
         config = require('../config.json');
     }
 
+    let versionInfo = require('../VersionInfo.json');
+    config.VersionInfo = versionInfo;
+
     config.Reload = Reload;
     config.Save = Save;
     config.ReadSSL = ReadSSL;

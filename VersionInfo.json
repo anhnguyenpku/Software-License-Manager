@@ -1,7 +1,8 @@
 {
-    "Version": "Unstable Dev 0.1",
+    "Version": "Unstable Dev V0.1",
     "Authors": 
     [
-        {"Name": "Mathias Maes", "Alias":"WatcherWhale"}
-    ]
+        {"Name": "Mathias Maes", "Alias":"WatcherWhale", "Link": "https://github.com/WatcherWhale"}
+    ],
+    "License": "MIT"
 }

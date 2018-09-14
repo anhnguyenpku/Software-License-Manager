@@ -125,6 +125,8 @@ function StartServer(appHandler)
 
 //Secure Web Routes
 
+//Software Routes
+
 web.all("/",async function(req,res)
 {
     res.send(builder.BuildPage("Dashboard",{"softpanel":"is-active"},{}));
@@ -324,7 +326,8 @@ web.get("/software/:id",function(req,res)
 
         res.send(builder.BuildPage("SoftwareItem",
             {
-                "softpanel":"is-active","title":"Software - " + results[0].name,
+                "softpanel":"is-active",
+                "title":"Software - " + results[0].name,
                 "software-name":results[0].name,
                 "software-distributor":results[0].distributor,
                 "sid":req.params.id
@@ -335,9 +338,26 @@ web.get("/software/:id",function(req,res)
     });
 });
 
+//User Routes
+
+web.all("/users",function(req,res)
+{
+    res.send(builder.BuildPage("Users",
+    {
+        "userpanel":"is-active"
+    },{}));
+});
+
+//Other Routes
+
 web.get("/settings",function(req,res)
 {
     res.send(builder.BuildPage("Settings",{},{}));
+});
+
+web.get("/system",function(req,res)
+{
+    res.send(builder.BuildPage("System",builder.BuildSystemInfoOptions(app.Config.VersionInfo),{}));
 });
 
 //Insecure Web Routes
