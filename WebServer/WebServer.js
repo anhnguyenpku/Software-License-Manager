@@ -367,6 +367,20 @@ web.all("/login",async function(req,res)
     res.send(builder.BuildLoginPage({}));
 });
 
+web.all("/logout",async function(req,res)
+{
+    let sesinfo = new SessionInfo(req);
+
+    let script = "<script>" +
+        'SetCookie("seskey","",-1);'+
+        'window.location.href = "/login";</script>';
+    
+    //Remove seskey
+    app.Database.QueryEmpty("DELETE FROM `slm_user_sessions` WHERE `ipadress`=" + SqlScape(sesinfo.ip) + ";");
+
+    res.send(builder.BuildLoginPage({"scripts":script}));
+});
+
 function ApiHandler(req,res)
 {
     res.set('Content-Type', 'application/json; charset=utf-8');
