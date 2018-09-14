@@ -109,3 +109,13 @@ input:disabled
 {
     font-size: 0.75rem;
 }
+
+table col.icon
+{
+    min-width: 55px;
+}
+
+tr.folder
+{
+    cursor: pointer;
+}

@@ -83,6 +83,18 @@ function RegisterEvents(socket)
             socket.emit("settings.list",results);
         });
     });
+
+    socket.on("files.basefolder", function()
+    {
+        let items = app.BaseFileBrowser.ReadBaseFolderSafe();
+        socket.emit("files.folderitems",items);
+    }); 
+
+    socket.on("files.folder",function(relPath)
+    {
+        let items = app.BaseFileBrowser.ReadFolderSafe(relPath);
+        socket.emit("files.folderitems",items);
+    });
 }
 
 function RegisterLoginPageEvents(socket)

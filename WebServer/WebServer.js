@@ -350,12 +350,17 @@ web.all("/users",function(req,res)
 
 //Other Routes
 
+web.all("/filebrowser",function(req,res)
+{
+    res.send(builder.BuildPage("FileBrowser",{},{}));
+});
+
 web.get("/settings",function(req,res)
 {
     res.send(builder.BuildPage("Settings",{},{}));
 });
 
-web.get("/system",function(req,res)
+web.all("/system",function(req,res)
 {
     res.send(builder.BuildPage("System",builder.BuildSystemInfoOptions(app.Config.VersionInfo),{}));
 });
