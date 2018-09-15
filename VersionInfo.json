@@ -1,5 +1,9 @@
 {
-    "Version": "Unstable Dev V0.1",
+    "Version":
+    {
+        "WebPlatform":"In Development",
+        "StartService": "In Development"
+    },
     "Authors": 
     [
         {"Name": "Mathias Maes", "Alias":"WatcherWhale", "Link": "https://github.com/WatcherWhale"}
