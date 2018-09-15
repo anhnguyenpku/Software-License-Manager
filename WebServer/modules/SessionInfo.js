@@ -10,9 +10,9 @@ class SessionInfo
 
 
     /**
-     * Process the given ipadress to a generic ipv6 adress
+     * Process the given ipadress to a generic ip adress
      * @param {String} ip 
-     * @returns {String} ipV6 adress
+     * @returns {String} adress
      */
     ProcessIp(ip)
     {
@@ -31,9 +31,9 @@ class SocketSessionInfo
     }
 
     /**
-     * Process the given ipadress to a generic ipv6 adress
+     * Process the given ipadress to a generic ip adress
      * @param {String} ip 
-     * @returns {String} ipV6 adress
+     * @returns {String} ipadress
      */
     ProcessIp(ip)
     {
