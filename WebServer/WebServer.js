@@ -348,9 +348,9 @@ web.all("/users",function(req,res)
     },{}));
 });
 
-web.all("/users/profile/:user",function()
+web.all("/users/profile/:user",function(req,res)
 {
-    
+    res.send(builder.BuildPage("UserProfile",{},{}));
 }); 
 
 //Other Routes
