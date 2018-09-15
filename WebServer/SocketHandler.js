@@ -1,9 +1,14 @@
 const SessionInfo = require('./modules/SessionInfo').SocketSessionInfo;
 const SqlScape = require('sqlstring').escape;
+const UserAuthenticator = require('./modules/UserAuthenticator');
 
 let io;
 let lio;
 let app;
+
+/**
+ * @type {UserAuthenticator}
+ */
 let authenticator;
 
 function Listen(server,appHandler,auth)
@@ -16,15 +21,30 @@ function Listen(server,appHandler,auth)
     io = require('socket.io')(server);
 
     //Listen to dashboard connections
-    io.on("connection",RegisterEvents);
+    io.on("connection",ValidateSocket);
 
     //Listen to login connections
     lio = io.of("/login");
     lio.on("connection",RegisterLoginPageEvents);
 }
 
+function ValidateSocket(socket)
+{
+    socket.on("auth.validate",function(cookie)
+    {
+        let sesinfo = new SessionInfo(socket);
+
+        authenticator.ValidateCookie(cookie,sesinfo,function(success,err)
+        {
+            if(success) RegisterEvents(socket);
+        });
+    });
+}
+
 function RegisterEvents(socket)
 {
+
+
     /*SOFTWARE API*/
     socket.on("software.list",function()
     {
@@ -101,7 +121,7 @@ function RegisterLoginPageEvents(socket)
 {
     let sesinfo = new SessionInfo(socket);
 
-    socket.on("auth",function(auth)
+    socket.on("auth.login",function(auth)
     {
         authenticator.Authenticate(auth.login, auth.password, sesinfo, function(cookie,success,err)
         {
