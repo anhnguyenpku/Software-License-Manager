@@ -348,6 +348,11 @@ web.all("/users",function(req,res)
     },{}));
 });
 
+web.all("/users/profile/:user",function()
+{
+    
+}); 
+
 //Other Routes
 
 web.all("/filebrowser",function(req,res)
