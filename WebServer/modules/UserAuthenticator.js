@@ -142,7 +142,7 @@ class UserAuthenticator
 
 /**
  * 
- * @param {String} login The logi of the user
+ * @param {String} login The login of the user
  * @param {String} oldPWD A hashed string from the old password
  * @param {String} newPWD A hashed string from the new password
  * @param {*} callback A callcack method TODO:Give an error messge
