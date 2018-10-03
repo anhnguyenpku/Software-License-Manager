@@ -98,7 +98,7 @@ class UserAuthenticator
     }
 
     /**
-     * 
+     * Validate a cookie token from the user
      * @param {String} cookie The cookie from the user.
      * @param {SessionInfo} sessioninfo The session info of the user.
      * @param {callbacks.ValidateCookie} callback A callback method.
@@ -140,15 +140,59 @@ class UserAuthenticator
         });
     }
 
-    /**
-     * NOT YET IMPLEMENTED
-     * @param {String} oldPWD 
-     * @param {String} newPWD 
-     */
-    async ChangePassword(oldPWD, newPWD)
+/**
+ * 
+ * @param {String} login The logi of the user
+ * @param {String} oldPWD A hashed string from the old password
+ * @param {String} newPWD A hashed string from the new password
+ * @param {*} callback A callcack method TODO:Give an error messge
+ */
+    async ChangePassword(login, oldPWD, newPWD,callback)
     {
-        oldPWD = SqlScape(oldPWD);
-        newPWD = SqlScape(newPWD);
+        this.Database.Query("SELECT * FROM `slm_users` WHERE `login`=" + SqlScape(login),function(results, fields, err)
+        {
+            if(err)
+            {
+                callback(false);
+                return;
+            }
+            else if(results.length > 1)
+            {
+                callback(false);
+                return;
+            }
+            else if(results.length === 0)
+            {
+                callback(false);
+                return;
+            }
+
+            let userdata = results[0];
+            let secret = userdata.secret.split(auth.divider);
+
+            let hash = auth.GetNakedHash(oldPWD,secret[1]);
+
+            if(hash === secret[0])
+            {
+                let newSecret = auth.SecurePassword(newPWD);
+
+                auth.Database.Query("UPDATE `secret`='" + newSecret + "' WHERE `id`=" + userdata.id + "",function(results,fields,err)
+                {
+                    if(err)
+                    {
+                        callback(false);
+                    }
+                    else
+                    {
+                        callback(true);
+                    }
+                });
+            }
+            else
+            {
+                callback(null);
+            }
+        });        
     }
     
     /**

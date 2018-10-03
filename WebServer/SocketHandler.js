@@ -43,8 +43,6 @@ function ValidateSocket(socket)
 
 function RegisterEvents(socket)
 {
-
-
     /*SOFTWARE API*/
     socket.on("software.list",function()
     {
@@ -96,6 +94,8 @@ function RegisterEvents(socket)
         });
     });
 
+    /* SETTINGS */
+
     socket.on("settings.list",function()
     {
         app.Database.Query("SELECT * FROM `slm_settings`",function(results,fields,err)
@@ -104,6 +104,8 @@ function RegisterEvents(socket)
         });
     });
 
+
+    /* FILEBROWSER */
     socket.on("files.basefolder", function()
     {
         let items = app.BaseFileBrowser.ReadBaseFolderSafe();
@@ -114,6 +116,23 @@ function RegisterEvents(socket)
     {
         let items = app.BaseFileBrowser.ReadFolderSafe(relPath);
         socket.emit("files.folderitems",items);
+    });
+
+    /* USER */
+
+    socket.on("user.chanePassword",function(userdata)
+    {
+        authenticator.ChangePassword(userdata.login,userdata.oldPWD,userdatanewPWD,function(success)
+        {
+            if(success)
+            {
+                socket.emit("user.changePassword");
+            }
+            else
+            {
+                socket.emit("error.user.changePassword","The password could not be changed!");
+            }
+        });
     });
 }
 
