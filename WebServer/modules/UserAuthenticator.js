@@ -33,7 +33,7 @@ class UserAuthenticator
     {
         login = SqlScape(login);
 
-        this.Database.Query("SELECT * FROM `slm_users` WHERE `login`=" + login,function(results, fields, err)
+        this.Database.Query("SELECT * FROM `slm_users` WHERE `login`=" + login, function(results, fields, err)
         {
             if(err)
             {
@@ -86,12 +86,9 @@ class UserAuthenticator
      */
     async Register(login, password,callback)
     {
-        login = SqlScape(login);
-        password = SqlScape(password);
-
         let secret = this.SecurePassword(password);
 
-        this.Database.Query("INSERT IGNORE INTO `slm_users` (`login`,`secret`) VALUES ('" + login + "', '" + secret +"')",function(results,fields,err)
+        this.Database.Query("INSERT IGNORE INTO `slm_users` (`login`,`secret`) VALUES (" + SqlScape(login) + ", " + SqlScape(secret) +")",function(results,fields,err)
         {
             callback(err);
         });
