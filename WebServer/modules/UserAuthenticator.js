@@ -132,7 +132,7 @@ class UserAuthenticator
             }
             else
             {
-                let remcCookieQuery = "DELETE FROM `slm_user_sessions` WHERE `id`=" + session.id;
+                let removeCookieQuery = "DELETE FROM `slm_user_sessions` WHERE `id`=" + session.id;
                 auth.Database.QueryEmpty(removeCookieQuery);
 
                 callback(false,null);
