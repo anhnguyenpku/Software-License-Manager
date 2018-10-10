@@ -1,11 +1,15 @@
 const SessionInfo = require('./modules/SessionInfo').SocketSessionInfo;
 const SqlScape = require('sqlstring').escape;
 const UserAuthenticator = require('./modules/UserAuthenticator');
+const App = require('../modules/AppHandler');
 
 let io;
 let lio;
-let app;
 
+/**
+ * @type {App}
+ */
+let app;
 /**
  * @type {UserAuthenticator}
  */
@@ -119,6 +123,28 @@ function RegisterEvents(socket)
     });
 
     /* USER */
+
+    socket.on("user.users",function()
+    {
+        app.Database.Query("SELECT * FROM `slm_users`",function(results,fields,err)
+        {
+            if(err)
+            {
+                socket.emit("error.user.users",err);
+            }
+            else
+            {
+                let users = [];
+
+                for(let i = 0; i < results.length; i++)
+                {
+                    users.push({"id":results[i].id,"name":results[i].login});
+                }
+
+                socket.emit("user.users",users);
+            }
+        });
+    });
 
     socket.on("user.chanePassword",function(userdata)
     {
