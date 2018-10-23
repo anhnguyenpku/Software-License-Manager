@@ -30,3 +30,43 @@ form
 { 
     display: none; 
 }
+
+.darkner
+{
+    position: absolute;
+    left:0;
+    right:0;
+    top:0;
+    bottom: 0;
+    
+    z-index: 999;
+}
+
+.darkner .status
+{
+    z-index: 1000;
+
+    position: absolute;
+    left: 50%;
+    top: 40%;
+
+    color: white;
+
+    font-size: 25px;
+
+    transform: translate(-50%,-50%);
+}
+
+.darkner::after
+{
+    content: "";
+
+    position: absolute;
+    left:0;
+    right:0;
+    top:0;
+    bottom: 0;
+
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.7);
+}

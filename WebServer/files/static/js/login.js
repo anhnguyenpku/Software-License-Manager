@@ -16,6 +16,8 @@ $(document).ready(function()
         }
 
         socket.emit("auth.login",authInfo);
+
+        $(".darkner").show();
     });
 });
 
@@ -36,5 +38,10 @@ socket.on("success",function(cookie)
 {
     SetCookie("seskey",cookie,999);
 
-    window.location.href = "/";
+    setTimeout(RedirectToHome,100);
+
+    function RedirectToHome()
+    {
+        window.location.href = "/";
+    }
 });
