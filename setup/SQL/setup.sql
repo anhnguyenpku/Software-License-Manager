@@ -37,6 +37,12 @@ CREATE TABLE IF NOT EXISTS `slm_software_versions` (
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
 
+CREATE TABLE IF NOT EXISTS `slm_groups` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` TEXT NOT NULL,
+  `permissions` LONGTEXT NOT NULL)
+ENGINE=InnoDB;
+
 
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.expiration', '5');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.divider', ':');
@@ -49,3 +55,5 @@ INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('files.sidlen', '8');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('files.vidlen', '8');
 
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('web.apiroute', 'api');
+
+INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (1,'admin','{"su":true}');
