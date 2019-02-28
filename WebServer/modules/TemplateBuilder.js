@@ -117,6 +117,20 @@ class TemplateBuilder
         return buildOptions;
     }
 
+    /**
+     * @param {Array} options An array of objects with an id and name
+     */
+    BuildDropDownOptions(options)
+    {
+        var dropdown = "";
+        options.forEach(function(opt)
+        {
+            dropdown += "<option value='" + id + "'>" + opt.name + "</option>";
+        });
+
+        return options;
+    }
+
     Refresh()
     {
         //Page Templates
