@@ -1,7 +1,10 @@
+const Database = require('./Mysql');
+
 class AppHandler
 {
     constructor()
     {
+        /** @type {Database} */
         this.Database;
         this.WebServer;
         this.FileServer;
