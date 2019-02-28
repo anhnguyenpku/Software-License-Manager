@@ -9,7 +9,7 @@ socket.on("user.users",function(list)
     {
         const user = list[i];
         
-        var html = "<tr><td>" + user.id + "</td> <td>" + user.name + "</td><td><a href='/user/" + user.id + "' class='button is-info'>Manage</a></td></tr>";
+        var html = "<tr><td>" + user.id + "</td> <td>" + user.name + "</td><td><a href='/users/" + user.id + "' class='button is-info'>Manage</a></td></tr>";
         
         $("table tbody").append(html);
         $("#addUser").toggleClass("is-loading",false);

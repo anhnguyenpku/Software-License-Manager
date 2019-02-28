@@ -38,7 +38,7 @@ function ValidateSocket(socket)
     {
         let sesinfo = new SessionInfo(socket);
 
-        authenticator.ValidateCookie(cookie,sesinfo,function(success,err)
+        authenticator.ValidateCookie(cookie,sesinfo,function(success,user,err)
         {
             if(success) RegisterEvents(socket);
         });

@@ -3,6 +3,9 @@ const SqlScape = require('sqlstring').escape;
 
 const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
+/**
+ * {UserAuthenticator}
+ */
 let auth;
 
 class UserAuthenticator
@@ -103,18 +106,18 @@ class UserAuthenticator
     async ValidateCookie(cookie,sessioninfo,callback)
     {
         cookie = SqlScape(cookie);
-
+        
         this.Database.Query("SELECT * FROM `slm_user_sessions` WHERE `cookie`=" + cookie + " AND `ipadress`='" + sessioninfo.ip + "'",
         function(results,fields,err)
         {
             if(err)
             {
-                callback(false,err);
+                callback(false,null,err);
                 return;
             }
             else if(results.length !== 1)
             {
-                callback(false,null);
+                callback(false,null,null);
                 return;
             }
 
@@ -125,14 +128,23 @@ class UserAuthenticator
 
             if(date < exdate)
             {
-                callback(true,null);
+                auth.Database.Query("SELECT * FROM `slm_users` WHERE `id`=" + SqlScape(session.userid),function(results,fields,err)
+                {
+                    if(err)
+                    {
+                        callback(false,null,err);
+                        return;
+                    }
+
+                    callback(true,results[0],null);
+                });
             }
             else
             {
                 let removeCookieQuery = "DELETE FROM `slm_user_sessions` WHERE `id`=" + session.id;
                 auth.Database.QueryEmpty(removeCookieQuery);
 
-                callback(false,null);
+                callback(false,null,null);
             }
         });
     }
@@ -281,7 +293,7 @@ callbacks.Register = function(err) {};
  * @param {Boolean} success Boolean thzt says if the validation was a success.
  * @param {Error} err Error
  */
-callbacks.ValidateCookie = function(success,err) {};
+callbacks.ValidateCookie = function(success,user,err) {};
 
 
 module.exports = UserAuthenticator;

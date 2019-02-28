@@ -59,7 +59,7 @@ async function CheckAuthentication(req,res,next)
     let sesinfo = new SessionInfo(req);
 
     //Validate the session key
-    authenticator.ValidateCookie(sesinfo.cookies['seskey'],sesinfo,function(valid,err)
+    authenticator.ValidateCookie(sesinfo.cookies['seskey'],sesinfo,function(valid,user,err)
     {
         //If session key is valid
         if(valid)
@@ -73,6 +73,7 @@ async function CheckAuthentication(req,res,next)
             }
 
             //Serve the requested page
+            req["user"] = user;
             next();
         }
         //If key is invalid
@@ -348,9 +349,15 @@ web.all("/users",function(req,res)
     },{}));
 });
 
-web.all("/users/profile/:user",function(req,res)
+web.all("/users/:user",function(req,res)
 {
-    res.send(builder.BuildPage("UserProfile",{},{}));
+    res.send(builder.BuildPage("UserProfile",
+        {
+            "title": "User: " + req.user.login,
+            "username": req.user.login,
+            "userpanel":"is-active"
+        }
+        ,{}));
 }); 
 
 //Other Routes

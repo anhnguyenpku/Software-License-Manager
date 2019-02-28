@@ -1,1 +1,44 @@
-<h1>{{username}}</h1>
+<h1 class="title is-2">User: {{username}}</h1>
+<nav class="breadcrumb has-triangles-separator" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="/users">Users</a></li>
+        <li class="is-active"><a href="/users/{{username}}" aria-current="page">{{username}}</a></li>
+    </ul>
+</nav>
+
+<h1 class="title is-3">UserInfo</h1>
+
+<form id="EditForm" action="/user/{{uid}}" method="POST" encType="multipart/form-data">
+    <div class="field column is-6" style="margin-bottom:0px;">
+        <label class="label">Username</label>
+        <div class="control">
+            <input class="input" type="text" placeholder="Name" name="name" value="{{username}}">
+        </div>
+    </div>
+    <div class="field column is-6" style="margin-bottom:0px;">
+        <label class="label">Password
+        </label>
+        <div class="control">
+            <a class="button">Change Password</a>
+        </div>
+    </div>
+    <div class="field column is-6" style="margin-bottom:0px;">
+        <label class="label">Email</label>
+        <div class="control">
+            <input class="input" type="email" placeholder="email" name="email" value="{{email}}">
+        </div>
+    </div>
+    <div class="field column is-6" style="margin-bottom:0px;">
+        <label class="label">Group</label>
+        <div class="control select">
+            <select>
+                
+            </select>
+        </div>
+    </div>
+    <div class="column is-6" style="margin-bottom:0px;">
+        <div id="submit" class="buttons is-right">
+            <button class="button is-info">Save</button>
+        </div>
+    </div>
+</form>
