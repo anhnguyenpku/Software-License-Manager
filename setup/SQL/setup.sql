@@ -47,13 +47,17 @@ ENGINE=InnoDB;
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.expiration', '5');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.divider', ':');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.iterations', '100000');
-INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.secretlen', '512');
-INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.saltlen', '25');
-INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.cookielen', '25');
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.secretlen', '1024');
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.saltlen', '128');
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.cookielen', '64');
 
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('files.sidlen', '8');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('files.vidlen', '8');
 
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('web.apiroute', 'api');
+
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('encryption.cipher', 'aes-256-ctr');
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('encryption.encoding', 'base64');
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('encryption.primelength', '2048');
 
 INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (1,'admin','{"su":true}');

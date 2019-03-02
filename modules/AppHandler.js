@@ -1,4 +1,5 @@
 const Database = require('./Mysql');
+const Settings = require('./Settings');
 
 class AppHandler
 {
@@ -10,6 +11,7 @@ class AppHandler
         this.FileServer;
         this.Config;
         this.Logger;
+        /** @type {Settings} */
         this.Settings;
         this.FileSystem;
         this.FileBrowser;

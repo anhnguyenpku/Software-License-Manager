@@ -2,9 +2,14 @@ const SessionInfo = require('./modules/SessionInfo').SocketSessionInfo;
 const SqlScape = require('sqlstring').escape;
 const UserAuthenticator = require('./modules/UserAuthenticator');
 const App = require('../modules/AppHandler');
+const EncryptedChannel = require("./modules/EncryptedChannel");
 
-let io;
-let lio;
+var socketServers = 
+{
+    "root": null,
+    "login": null,
+    "panel": null
+};
 
 /**
  * @type {App}
@@ -15,28 +20,69 @@ let app;
  */
 let authenticator;
 
+/**
+ * @type {EncryptedChannel[]}
+ */
+let encryptedChannels = [];
+let masterKeys;
+
 function Listen(server,appHandler,auth)
 {
     //Save References
     app = appHandler;
     authenticator = auth;
 
+    EncryptedChannel.primeLength = app.Settings.GetSetting("encryption.primelength");
+    EncryptedChannel.cipher = app.Settings.GetSetting("encryption.cipher");
+    EncryptedChannel.encoding = app.Settings.GetSetting("encryption.encoding");
+
+    masterKeys = EncryptedChannel.CreateMasterKeys();
+
     //Create socket.io
-    io = require('socket.io')(server);
+    var io = require('socket.io')(server);
+    socketServers.root = io;
+
+    //Listen to root connections
+    socketServers.root.on("connection",EncryptChannel);
 
     //Listen to dashboard connections
-    io.on("connection",ValidateSocket);
+    socketServers.panel = socketServers.root.of("/dashboard");
+    socketServers.panel.use(AttachEncryptedChannel).on("connection",ValidateSocket);
 
     //Listen to login connections
-    lio = io.of("/login");
-    lio.on("connection",RegisterLoginPageEvents);
+    socketServers.login = socketServers.root.of("/login");
+    socketServers.login.use(AttachEncryptedChannel).on("connection",RegisterLoginPageEvents);
 }
 
-function ValidateSocket(socket)
+async function AttachEncryptedChannel(socket,next)
 {
-    socket.on("auth.validate",function(cookie)
+    GetChannel(socket.id,function(channel)
+    {
+        socket.channel = channel;
+        next();
+    });
+}
+
+async function EncryptChannel(socket)
+{
+    let eCh = new EncryptedChannel(socket,masterKeys);
+    encryptedChannels.push(eCh);
+
+    app.Log("Channels",encryptedChannels.length);
+
+    socket.once("encrypt.encrypted",function()
+    {
+        let i = encryptedChannels.lastIndexOf(eCh);
+        encryptedChannels.splice(i,1);
+    });
+}
+
+async function ValidateSocket(socket)
+{
+    socket.on("auth.validate",async function(cookieEncrypted)
     {
         let sesinfo = new SessionInfo(socket);
+        let cookie = socket.channel.DecryptMessage(cookieEncrypted);
 
         authenticator.ValidateCookie(cookie,sesinfo,function(success,user,err)
         {
@@ -45,10 +91,10 @@ function ValidateSocket(socket)
     });
 }
 
-function RegisterEvents(socket)
+async function RegisterEvents(socket)
 {
     /*SOFTWARE API*/
-    socket.on("software.list",function()
+    socket.on("software.list",async function()
     {
         //TODO implement error casting
         app.Database.Query("SELECT * FROM `slm_software` ORDER BY `date` DESC",function(results,fields,err)
@@ -78,14 +124,15 @@ function RegisterEvents(socket)
 
                     if(i === results.length -1)
                     {
-                        socket.emit("software.list",results);
+                        var encrypted = socket.channel.EncryptMessage(results);
+                        socket.emit("software.list",encrypted);
                     }
                 });
             }
         });
     });
 
-    socket.on("software.versions.list",function(sid)
+    socket.on("software.versions.list",async function(sid)
     {
         app.Database.Query("SELECT * FROM `slm_software_versions` WHERE `software`=" + SqlScape(sid) + " ORDER BY `date` DESC",function(results,fields,err)
         {
@@ -94,37 +141,42 @@ function RegisterEvents(socket)
                 app.Error("SocketHandler", err.message);
             }
 
-            socket.emit("software.versions.list",results);
+            var encrypted = socket.channel.EncryptMessage(results);
+            socket.emit("software.versions.list",encrypted);
         });
     });
 
     /* SETTINGS */
 
-    socket.on("settings.list",function()
+    socket.on("settings.list",async function()
     {
         app.Database.Query("SELECT * FROM `slm_settings`",function(results,fields,err)
         {
-            socket.emit("settings.list",results);
+            var encrypted = socket.channel.EncryptMessage(results);
+            socket.emit("settings.list",encrypted);
         });
     });
 
 
     /* FILEBROWSER */
-    socket.on("files.basefolder", function()
+    socket.on("files.basefolder", async function()
     {
         let items = app.BaseFileBrowser.ReadBaseFolderSafe();
-        socket.emit("files.folderitems",items);
+        var encrypted = socket.channel.EncryptMessage(items);
+        socket.emit("files.folderitems",encrypted);
     }); 
 
-    socket.on("files.folder",function(relPath)
+    socket.on("files.folder",async function(relPath)
     {
         let items = app.BaseFileBrowser.ReadFolderSafe(relPath);
-        socket.emit("files.folderitems",items);
+
+        var encrypted = socket.channel.EncryptMessage(items);
+        socket.emit("files.folderitems",encrypted);
     });
 
     /* USER */
 
-    socket.on("user.users",function()
+    socket.on("user.users",async function()
     {
         app.Database.Query("SELECT * FROM `slm_users`",function(results,fields,err)
         {
@@ -141,12 +193,13 @@ function RegisterEvents(socket)
                     users.push({"id":results[i].id,"name":results[i].login});
                 }
 
-                socket.emit("user.users",users);
+                var encrypted = socket.channel.EncryptMessage(users);
+                socket.emit("user.users",encrypted);
             }
         });
     });
 
-    socket.on("user.chanePassword",function(userdata)
+    socket.on("user.chanePassword",async function(userdata)
     {
         authenticator.ChangePassword(userdata.login,userdata.oldPWD,userdatanewPWD,function(success)
         {
@@ -156,30 +209,59 @@ function RegisterEvents(socket)
             }
             else
             {
-                socket.emit("error.user.changePassword","The password could not be changed!");
+                var encrypted = socket.channel.EncryptMessage("The password could not be changed!");
+                socket.emit("error.user.changePassword",encrypted);
             }
         });
     });
 }
 
-function RegisterLoginPageEvents(socket)
+async function RegisterLoginPageEvents(socket)
 {
     let sesinfo = new SessionInfo(socket);
 
-    socket.on("auth.login",function(auth)
+    socket.on("auth.login",function(encAuth)
     {
+        var auth = socket.channel.DecryptMessage(encAuth);
+
         authenticator.Authenticate(auth.login, auth.password, sesinfo, function(cookie,success,err)
         {
             if(err || !success)
             {
-                socket.emit("failed",err);
+                var encErr = socket.channel.EncryptMessage(err);
+                socket.emit("failed",encErr);
                 return;
             }
 
-            socket.emit("success",cookie);
+            var encCookie = socket.channel.EncryptMessage(cookie);
+            socket.emit("success",encCookie);
         });
     });
 }
 
+/**
+ * @param {String} id The socket id
+ * @param {GetChannelCallback} callback Callback method
+ */
+async function GetChannel(id,callback)
+{
+    for (let i = 0; i < encryptedChannels.length; i++)
+    {
+        const channel = encryptedChannels[i];
+        
+        if(channel.id === id)
+        {
+            callback(channel);
+            return;
+        }
+    }
+
+    callback(null);
+}
+
+/**
+ * @param {EncryptedChannel} channel 
+ */
+function GetChannelCallback(channel){}
 
 module.exports = {"Listen":Listen};
