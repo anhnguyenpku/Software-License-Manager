@@ -21,6 +21,7 @@ class UserAuthenticator
         this.saltLength = parseInt(this.Settings.GetSetting("authenticate.saltlen"));
         this.cookieLength = parseInt(this.Settings.GetSetting("authenticate.cookielen"));
         this.secretLength = parseInt(this.Settings.GetSetting("authenticate.secretlen"));
+        this.encoding = this.Settings.GetSetting("encryption.encoding");
 
         auth = this;
     }
@@ -206,28 +207,12 @@ class UserAuthenticator
     
     /**
      * Generate a random key
-     * @param {Number} length The length of the key.
+     * @param {Number} length The length of the key in bytes.
      * @returns String
      */
     GenerateKey(length)
     {
-        function RandomLetter()
-        {
-            let randomBytesNum = crypto.randomBytes(1).readInt8(0) + 128;
-            let randomFloat = randomBytesNum / 255;
-            let randomNum = Math.floor(randomFloat * (alphabet.length-1));
-
-            return alphabet[randomNum];
-        }
-
-        let rndStr = "";
-
-        for (let i = 0; i < length; i++)
-        {
-            rndStr += RandomLetter();    
-        }
-
-        return rndStr;
+        return crypto.randomBytes(length).toString('base64')
     }
 
     /**
