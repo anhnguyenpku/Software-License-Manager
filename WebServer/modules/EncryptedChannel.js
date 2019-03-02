@@ -99,8 +99,8 @@ class EncryptedChannel
      */
     static CreateMasterKeys()
     {
-        var num = Number.parseInt(EncryptedChannel.primeLength);
-        let diff = crypto.createDiffieHellman(num);
+        var primeLength = parseInt(EncryptedChannel.primeLength);
+        let diff = crypto.createDiffieHellman(primeLength);
         diff.generateKeys();
 
         return diff;
