@@ -32,10 +32,14 @@ function Listen(server,appHandler,auth)
     app = appHandler;
     authenticator = auth;
 
-    EncryptedChannel.primeLength = app.Settings.GetSetting("encryption.primelength");
+    EncryptedChannel.primeLength = parseInt(app.Settings.GetSetting("encryption.primelength"));
     EncryptedChannel.cipher = app.Settings.GetSetting("encryption.cipher");
     EncryptedChannel.encoding = app.Settings.GetSetting("encryption.encoding");
+    //Must be cipher bits divided by 8
+    EncryptChannel.keylength = parseInt(app.Settings.GetSetting("encryption.keylength"));
 
+    app.Log("Channel Encryptor", "Generating prime number...");
+    app.Log("Channel Encryptor", "This might take a while!");
     masterKeys = EncryptedChannel.CreateMasterKeys();
 
     //Create socket.io

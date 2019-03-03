@@ -57,6 +57,7 @@ INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('files.vidlen', '8');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('web.apiroute', 'api');
 
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('encryption.cipher', 'aes-256-ctr');
+INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('encryption.keylength', '32');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('encryption.encoding', 'base64');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('encryption.primelength', '2048');
 

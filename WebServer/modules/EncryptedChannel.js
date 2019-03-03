@@ -12,6 +12,10 @@ class EncryptedChannel
         this.socket = socket;
         
         this.id = socket.id;
+
+        this.salt = crypto.randomBytes(EncryptedChannel.keyLength);
+        this.iv = crypto.randomBytes(EncryptedChannel.keyLength);
+
         this.verificationCode = crypto.randomBytes(16).toString('base64');
 
         this.keys = crypto.createDiffieHellman(masterKeys.getPrime(),masterKeys.getGenerator());
@@ -28,10 +32,15 @@ class EncryptedChannel
 
     async SetupChannel()
     {
+        var channel = this;
+
         this.socket.emit("encrypt.constants",
         {
             "encoding": EncryptedChannel.encoding,
-            "cipher": EncryptedChannel.cipher
+            "cipher": EncryptedChannel.cipher,
+            "keyLenght": EncryptedChannel.keyLength,
+            "iv": channel.iv,
+            "salt": channel.salt
         });
 
         this.socket.emit("encrypt.keys",
@@ -41,12 +50,14 @@ class EncryptedChannel
             "publickey": this.keys.getPublicKey()
         });
 
-        var channel = this;
         this.socket.on("encrypt.keys",function(keys)
         {
-            channel.secret = channel.keys.computeSecret(keys.publickey);
+            var pubBuffer = Buffer.from(keys.publickey);
+            channel.secret = channel.keys.computeSecret(pubBuffer);
 
-            channel.socket.emit("encrypt.verify");
+            channel.secret = crypto.scryptSync(channel.secret, channel.salt, EncryptedChannel.keyLength);
+
+            channel.socket.emit("encrypt.verify", channel.EncryptMessage(channel.verificationCode));
         });
 
         this.socket.on("encrypt.verify",function(verificationCode)
@@ -74,8 +85,8 @@ class EncryptedChannel
     EncryptMessage(msg)
     {
         let msgStr = JSON.stringify(msg);
-
-        let cipher = crypto.createCipher(EncryptedChannel.cipher,this.secret);
+        
+        let cipher = crypto.createCipheriv(EncryptedChannel.cipher,this.secret,this.iv);
         
         let out = cipher.update(msgStr,'utf8',EncryptedChannel.encoding);
         return out + cipher.final(EncryptedChannel.encoding);
@@ -86,7 +97,7 @@ class EncryptedChannel
      */
     DecryptMessage(msg)
     {
-        let decipher = crypto.createDecipher(EncryptedChannel.cipher,this.secret);
+        let decipher = crypto.createDecipheriv(EncryptedChannel.cipher,this.secret,this.iv);
         
         let out = decipher.update(msg,EncryptedChannel.encoding,'utf8');
         out += decipher.final('utf8');
@@ -99,8 +110,8 @@ class EncryptedChannel
      */
     static CreateMasterKeys()
     {
-        var primeLength = parseInt(EncryptedChannel.primeLength);
-        let diff = crypto.createDiffieHellman(primeLength);
+        var primeLength = 8;
+        let diff = crypto.createDiffieHellman(primeLength /*EncryptedChannel.primeLength*/);
         diff.generateKeys();
 
         return diff;
@@ -113,5 +124,6 @@ class EncryptedChannel
 EncryptedChannel.encoding = "base64";
 EncryptedChannel.cipher = "aes-256-ctr";
 EncryptedChannel.primeLength = 1024;
+EncryptedChannel.keyLength = 32;
 
 module.exports = EncryptedChannel;
