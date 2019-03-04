@@ -1,6 +1,5 @@
 const crypto = require("crypto");
-
-const diffie = crypto.createDiffieHellman(4);
+const scrypt = require("scryptsy");
 
 class EncryptedChannel
 {
@@ -13,8 +12,8 @@ class EncryptedChannel
         
         this.id = socket.id;
 
-        this.salt = crypto.randomBytes(EncryptedChannel.keyLength);
-        this.iv = crypto.randomBytes(EncryptedChannel.keyLength);
+        this.salt = crypto.randomBytes(EncryptedChannel.keyLength).toString('base64');
+        this.iv = crypto.randomBytes(16);
 
         this.verificationCode = crypto.randomBytes(16).toString('base64');
 
@@ -40,7 +39,8 @@ class EncryptedChannel
             "cipher": EncryptedChannel.cipher,
             "keyLenght": EncryptedChannel.keyLength,
             "iv": channel.iv,
-            "salt": channel.salt
+            "salt": channel.salt,
+            "scrypt": EncryptedChannel.scrypt
         });
 
         this.socket.emit("encrypt.keys",
@@ -50,21 +50,23 @@ class EncryptedChannel
             "publickey": this.keys.getPublicKey()
         });
 
-        this.socket.on("encrypt.keys",function(keys)
+        this.socket.on("encrypt.keys",async function(keys)
         {
             var pubBuffer = Buffer.from(keys.publickey);
             channel.secret = channel.keys.computeSecret(pubBuffer);
 
-            channel.secret = crypto.scryptSync(channel.secret, channel.salt, EncryptedChannel.keyLength);
+            channel.secret = scrypt(channel.secret,channel.salt,
+                EncryptedChannel.scrypt.N, EncryptedChannel.scrypt.r, EncryptedChannel.scrypt.p,
+                EncryptedChannel.keyLength);
 
-            channel.socket.emit("encrypt.verify", channel.EncryptMessage(channel.verificationCode));
+                channel.socket.emit("encrypt.verify",channel.EncryptMessage(channel.verificationCode));
         });
 
         this.socket.on("encrypt.verify",function(verificationCode)
         {
             if(channel.verificationCode == channel.DecryptMessage(verificationCode))
             {
-                channel.socket.emit("encrypt.succes");
+                channel.socket.emit("encrypt.success");
             }
             else
             {
@@ -105,9 +107,6 @@ class EncryptedChannel
         return JSON.parse(out);
     }
 
-    /**
-     * @returns {diffie}
-     */
     static CreateMasterKeys()
     {
         var primeLength = 8;
@@ -125,5 +124,6 @@ EncryptedChannel.encoding = "base64";
 EncryptedChannel.cipher = "aes-256-ctr";
 EncryptedChannel.primeLength = 1024;
 EncryptedChannel.keyLength = 32;
+EncryptedChannel.scrypt = {"N":1024, "r":8, "p": 1};
 
 module.exports = EncryptedChannel;

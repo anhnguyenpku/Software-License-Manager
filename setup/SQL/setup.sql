@@ -40,9 +40,9 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `slm_groups` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` TEXT NOT NULL,
-  `permissions` LONGTEXT NOT NULL)
+  `permissions` LONGTEXT NOT NULL,
+  PRIMARY KEY (`id`))
 ENGINE=InnoDB;
-
 
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.expiration', '5');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('authenticate.divider', ':');
