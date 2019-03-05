@@ -17,49 +17,42 @@ eSocket.on("encrypt.constants",function(data)
     encryptionConstants.iv = new Uint8Array(encryptionConstants.iv);
 });
 
-if(true || sessionStorage.getItem("secret") == null || sessionStorage.getItem("secret") == "")
+eSocket.on("encrypt.keys",function(data)
 {
-    eSocket.on("encrypt.keys",function(data)
-    {
-        sessionStorage.setItem("id",socket.id);
-        sessionStorage.setItem("serverKeys", data);
+    SetCookie("channelId",eSocket.id);
+    sessionStorage.setItem("serverKeys", data);
 
-        var primeBuffer = new Uint8Array(data.prime);
-        var genBuffer = new Uint8Array(data.generator);
-        var pubBuffer = new Uint8Array(data.publickey);
+    var primeBuffer = new Uint8Array(data.prime);
+    var genBuffer = new Uint8Array(data.generator);
+    var pubBuffer = new Uint8Array(data.publickey);
 
-        var diffie = crypto.createDiffieHellman(primeBuffer,genBuffer);
-        var publickey = diffie.generateKeys();
+    var diffie = crypto.createDiffieHellman(primeBuffer,genBuffer);
+    var publickey = diffie.generateKeys();
 
-        var tempSecret = diffie.computeSecret(pubBuffer);
-        
-        //var saltBuff = new Uint8Array(data.salt);
-        var key = scrypt(tempSecret, encryptionConstants.salt, encryptionConstants.scrypt.N, encryptionConstants.scrypt.r, encryptionConstants.scrypt.p,
-            encryptionConstants.keyLenght);
-        //var keyBuff = new Uint8Array(key);
-        var keyBuff = key;
+    var tempSecret = diffie.computeSecret(pubBuffer);
+    
+    //var saltBuff = new Uint8Array(data.salt);
+    var key = scrypt(tempSecret, encryptionConstants.salt, encryptionConstants.scrypt.N, encryptionConstants.scrypt.r, encryptionConstants.scrypt.p,
+        encryptionConstants.keyLenght);
+    //var keyBuff = new Uint8Array(key);
+    var keyBuff = key;
 
-        sessionStorage.setItem("secret",JSON.stringify(keyBuff));
-        eSocket.emit("encrypt.keys",{"publickey": publickey});
-    });
+    sessionStorage.setItem("secret",JSON.stringify(keyBuff));
+    eSocket.emit("encrypt.keys",{"publickey": publickey});
+});
 
-    eSocket.on("encrypt.verify",function(data)
-    {
-        var dec = Decrypt(data);
-
-        var ec = Encrypt(dec);
-        eSocket.emit("encrypt.verify",ec);
-    });
-
-    eSocket.on("encrypt.success",function()
-    {
-        console.log("Socket channels are now encrypted!");
-    });
-}
-else
+eSocket.on("encrypt.verify",function(data)
 {
-    eSocket.emit("encrypt.encrypted");
-}
+    var dec = Decrypt(data);
+
+    var ec = Encrypt(dec);
+    eSocket.emit("encrypt.verify",ec);
+});
+
+eSocket.on("encrypt.success",function()
+{
+    console.log("Socket channels are now encrypted!");
+});
 
 function Encrypt(msg)
 {

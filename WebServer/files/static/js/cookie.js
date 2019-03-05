@@ -6,6 +6,11 @@ function SetCookie(cname, cvalue, exdays)
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
+function SetCookie(cname, cvalue)
+{
+    document.cookie = cname + "=" + cvalue + ";path=/";
+}
+
 function GetCookie(cname)
 {
     var name = cname + "=";

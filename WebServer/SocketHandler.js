@@ -1,5 +1,6 @@
 const SessionInfo = require('./modules/SessionInfo').SocketSessionInfo;
 const SqlScape = require('sqlstring').escape;
+const cookie = require("cookie");
 const UserAuthenticator = require('./modules/UserAuthenticator');
 const App = require('../modules/AppHandler');
 const EncryptedChannel = require("./modules/EncryptedChannel");
@@ -51,24 +52,35 @@ function Listen(server,appHandler,auth)
 
     //Listen to dashboard connections
     socketServers.panel = socketServers.root.of("/dashboard");
-    socketServers.panel.use(AttachEncryptedChannel).on("connection",ValidateSocket);
+    socketServers.panel.on("connection",ValidateSocket);
 
     //Listen to login connections
     socketServers.login = socketServers.root.of("/login");
-    socketServers.login.use(AttachEncryptedChannel).on("connection",RegisterLoginPageEvents);
+    socketServers.login.on("connection",RegisterLoginPageEvents);
 }
 
-async function AttachEncryptedChannel(socket,next)
+function AttachEncryptedChannel(socket)
 {
-    GetChannel(socket.id,function(channel)
-    {
-        socket.channel = channel;
-        next();
-    });
+    if(socket.channel) return;
+
+    var cookies = socket.request.headers.cookie;
+    var cookiesObj = cookie.parse(cookies);
+    var id = cookiesObj["channelId"];
+
+    socket["channel"] = GetChannel(id);
 }
 
 async function EncryptChannel(socket)
 {
+    //Check if client has got an id
+    var channelID = ParseCookie(socket,"channelId");
+    if(channelID && channelID != null)
+    {
+        if(GetChannel(channelID))
+            return;
+    }
+
+    //Start an encrypted channel
     let eCh = new EncryptedChannel(socket,masterKeys);
     encryptedChannels.push(eCh);
 
@@ -85,6 +97,8 @@ async function ValidateSocket(socket)
 {
     socket.on("auth.validate",async function(cookieEncrypted)
     {
+        AttachEncryptedChannel(socket);
+
         let sesinfo = new SessionInfo(socket);
         let cookie = socket.channel.DecryptMessage(cookieEncrypted);
 
@@ -221,11 +235,13 @@ async function RegisterEvents(socket)
 }
 
 async function RegisterLoginPageEvents(socket)
-{
+{   
     let sesinfo = new SessionInfo(socket);
 
     socket.on("auth.login",function(encAuth)
     {
+        AttachEncryptedChannel(socket);
+
         var auth = socket.channel.DecryptMessage(encAuth);
 
         authenticator.Authenticate(auth.login, auth.password, sesinfo, function(cookie,success,err)
@@ -245,27 +261,34 @@ async function RegisterLoginPageEvents(socket)
 
 /**
  * @param {String} id The socket id
- * @param {GetChannelCallback} callback Callback method
  */
-async function GetChannel(id,callback)
+function GetChannel(id)
 {
     for (let i = 0; i < encryptedChannels.length; i++)
     {
         const channel = encryptedChannels[i];
-        
-        if(channel.id === id)
+
+        if(channel.id == id)
         {
-            callback(channel);
-            return;
+            return channel;
         }
     }
 
-    callback(null);
+    return null;
 }
 
-/**
- * @param {EncryptedChannel} channel 
- */
-function GetChannelCallback(channel){}
+function ParseCookies(socket)
+{
+    var cookies = socket.request.headers.cookie;
+    var cookiesObj = cookie.parse(cookies);
+    return cookiesObj;
+}
+
+function ParseCookie(socket,cname)
+{
+    var cookies = socket.request.headers.cookie;
+    var cookiesObj = cookie.parse(cookies);
+    return cookiesObj[cname];
+}
 
 module.exports = {"Listen":Listen};

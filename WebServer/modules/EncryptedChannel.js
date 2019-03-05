@@ -67,6 +67,7 @@ class EncryptedChannel
             if(channel.verificationCode == channel.DecryptMessage(verificationCode))
             {
                 channel.socket.emit("encrypt.success");
+                channel.socket.channel = channel;
             }
             else
             {
