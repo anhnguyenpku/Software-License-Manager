@@ -33,15 +33,7 @@ class EncryptedChannel
     {
         var channel = this;
 
-        this.socket.emit("encrypt.constants",
-        {
-            "encoding": EncryptedChannel.encoding,
-            "cipher": EncryptedChannel.cipher,
-            "keyLenght": EncryptedChannel.keyLength,
-            "iv": channel.iv,
-            "salt": channel.salt,
-            "scrypt": EncryptedChannel.scrypt
-        });
+        this.EmitConstants(this.socket);
 
         this.socket.emit("encrypt.keys",
         {
@@ -79,6 +71,22 @@ class EncryptedChannel
                     "encoding": EncryptedChannel.encoding
                 });
             }
+        });
+    }
+
+    async EmitConstants(socket)
+    {
+        var channel = this;
+        this.socket = socket;
+                
+        this.socket.emit("encrypt.constants",
+        {
+            "encoding": EncryptedChannel.encoding,
+            "cipher": EncryptedChannel.cipher,
+            "keyLenght": EncryptedChannel.keyLength,
+            "iv": channel.iv,
+            "salt": channel.salt,
+            "scrypt": EncryptedChannel.scrypt
         });
     }
 

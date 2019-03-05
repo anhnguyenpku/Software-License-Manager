@@ -76,8 +76,12 @@ async function EncryptChannel(socket)
     var channelID = ParseCookie(socket,"channelId");
     if(channelID && channelID != null)
     {
-        if(GetChannel(channelID))
+        var channel = GetChannel(channelID)
+        if(channel)
+        {
+            channel.EmitConstants(socket);
             return;
+        }
     }
 
     //Start an encrypted channel

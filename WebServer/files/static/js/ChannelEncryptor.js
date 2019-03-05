@@ -52,6 +52,7 @@ eSocket.on("encrypt.verify",function(data)
 eSocket.on("encrypt.success",function()
 {
     console.log("Socket channels are now encrypted!");
+    window.location.reload();
 });
 
 function Encrypt(msg)
