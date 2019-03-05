@@ -1,3 +1,5 @@
+const encryptionEvents = new EventEmitter();
+
 function EventEmitter() {}
 
 EventEmitter.prototype.on =

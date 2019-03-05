@@ -2,8 +2,6 @@ const crypto = require("crypto");
 const scrypt = require("scryptsy");
 var eSocket = io();
 
-const encryptionEvents = new EventEmitter();
-
 var encryptionConstants = 
     {
         "encoding": "base64",
