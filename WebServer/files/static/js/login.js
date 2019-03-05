@@ -31,11 +31,13 @@ function SecurePassword(login,password)
 socket.on("failed",function(message)
 {
     //Display message
-    console.log(message);
+    console.log(Decrypt(message));
 });
 
-socket.on("success",function(cookie)
+socket.on("success",function(cookieEn)
 {
+    var cookie = Decrypt(cookieEn);
+    
     SetCookie("seskey",cookie,999);
 
     setTimeout(RedirectToHome,100);
