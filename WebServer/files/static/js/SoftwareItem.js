@@ -1,6 +1,6 @@
 $(document).ready(function()
 {
-    socket.emit("software.versions.list",sid);
+    socket.emit("software.versions.list",Encrypt(sid));
 
     $("#editBtn").click(function()
     {
@@ -14,8 +14,10 @@ $(document).ready(function()
     });
 });
 
-socket.on("software.versions.list",function(list)
+socket.on("software.versions.list",function(listEn)
 {
+    var list = Decrypt(listEn);
+    
     for (let i = 0; i < list.length; i++)
     {
         const version = list[i];

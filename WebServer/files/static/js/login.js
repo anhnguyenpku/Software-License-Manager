@@ -15,7 +15,7 @@ $(document).ready(function()
             "password": SecurePassword(log,pass)
         }
 
-        socket.emit("auth.login",authInfo);
+        socket.emit("auth.login", Encrypt(authInfo));
 
         $(".darkner").show();
     });

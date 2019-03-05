@@ -3,8 +3,10 @@ $(window).ready(function()
     socket.emit("user.users");
 });
 
-socket.on("user.users",function(list)
+socket.on("user.users",function(listEn)
 {
+    var list = Decrypt(listEn);
+    
     for (let i = 0; i < list.length; i++)
     {
         const user = list[i];

@@ -7,7 +7,7 @@ var settings = [];
 
 socket.on("settings.list",function(setts)
 {
-    settings = setts;
+    settings = Decrypt(setts);
 
     for (let i = 0; i < settings.length; i++)
     {

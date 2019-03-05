@@ -8,8 +8,10 @@ $(document).ready(function()
     });
 });
 
-socket.on("software.list",function(list)
+socket.on("software.list",function(listEn)
 {
+    var list = Decrypt(listEn);
+    
     for (let i = 0; i < list.length; i++)
     {
         const softItem = list[i];

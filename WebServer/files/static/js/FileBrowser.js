@@ -5,8 +5,10 @@ $(document).ready(function()
     socket.emit("files.basefolder");
 });
 
-socket.on("files.folderitems",function(items)
+socket.on("files.folderitems",function(itemsEn)
 {
+    var items = Decrypt(itemsEn);
+    
     $('tbody').empty();
 
     var html = '';
