@@ -1,6 +1,6 @@
 var currentPath = "";
 
-$(document).ready(function()
+encryptionEvents.on("loaded",function()
 {
     socket.emit("files.basefolder");
 });

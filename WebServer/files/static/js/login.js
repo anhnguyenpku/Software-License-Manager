@@ -1,6 +1,6 @@
 var socket = io(window.location.href);
 
-$(document).ready(function()
+encryptionEvents.on("loaded",function()
 {
     $("form").submit(function(e)
     {

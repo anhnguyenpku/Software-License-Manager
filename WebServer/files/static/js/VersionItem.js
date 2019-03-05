@@ -1,4 +1,4 @@
-$(document).ready(function()
+encryptionEvents.on("loaded",function()
 {
     $("#editBtn").click(function()
     {

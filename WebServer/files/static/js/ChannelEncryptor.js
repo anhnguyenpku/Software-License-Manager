@@ -2,6 +2,8 @@ const crypto = require("crypto");
 const scrypt = require("scryptsy");
 var eSocket = io();
 
+const encryptionEvents = new EventEmitter();
+
 var encryptionConstants = 
     {
         "encoding": "base64",
@@ -15,6 +17,8 @@ eSocket.on("encrypt.constants",function(data)
 {
     encryptionConstants = data;
     encryptionConstants.iv = new Uint8Array(encryptionConstants.iv);
+
+    encryptionEvents.emit("loaded");
 });
 
 eSocket.on("encrypt.keys",function(data)
@@ -31,13 +35,10 @@ eSocket.on("encrypt.keys",function(data)
 
     var tempSecret = diffie.computeSecret(pubBuffer);
     
-    //var saltBuff = new Uint8Array(data.salt);
     var key = scrypt(tempSecret, encryptionConstants.salt, encryptionConstants.scrypt.N, encryptionConstants.scrypt.r, encryptionConstants.scrypt.p,
         encryptionConstants.keyLenght);
-    //var keyBuff = new Uint8Array(key);
-    var keyBuff = key;
 
-    sessionStorage.setItem("secret",JSON.stringify(keyBuff));
+    sessionStorage.setItem("secret",JSON.stringify(key));
     eSocket.emit("encrypt.keys",{"publickey": publickey});
 });
 
@@ -57,6 +58,7 @@ eSocket.on("encrypt.success",function()
 
 function Encrypt(msg)
 {
+    console.log(encryptionConstants);
     var msgStr = JSON.stringify(msg);
 
     var secret = Uint8Array.from(JSON.parse(sessionStorage.getItem("secret")).data);
@@ -68,6 +70,7 @@ function Encrypt(msg)
 
 function Decrypt(msg)
 {
+    console.log(encryptionConstants);
     var secret = Uint8Array.from(JSON.parse(sessionStorage.getItem("secret")).data);
 
     var cipher = crypto.createDecipheriv(encryptionConstants.cipher,secret,encryptionConstants.iv);

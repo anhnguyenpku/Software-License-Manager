@@ -1,4 +1,4 @@
-$(window).ready(function()
+encryptionEvents.on("loaded",function()
 {
     socket.emit("user.users");
 });

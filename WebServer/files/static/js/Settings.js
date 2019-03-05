@@ -1,4 +1,4 @@
-$(document).ready(function()
+encryptionEvents.on("loaded",function()
 {
     socket.emit("settings.list");
 });
