@@ -61,13 +61,21 @@ function Listen(server,appHandler,auth)
 
 function AttachEncryptedChannel(socket)
 {
-    if(socket.channel) return;
+    if(socket.channel) return true;
+    
+    try
+    {
+        var cookies = socket.request.headers.cookie;
+        var cookiesObj = cookie.parse(cookies);
+        var id = cookiesObj["channelId"];
 
-    var cookies = socket.request.headers.cookie;
-    var cookiesObj = cookie.parse(cookies);
-    var id = cookiesObj["channelId"];
-
-    socket["channel"] = GetChannel(id);
+        socket["channel"] = GetChannel(id);
+        return socket["channel"];
+    }
+    catch(err)
+    {
+        return false;
+    }
 }
 
 async function EncryptChannel(socket)
@@ -81,6 +89,10 @@ async function EncryptChannel(socket)
         {
             channel.EmitConstants(socket);
             return;
+        }
+        else
+        {
+            socket.emit("encrypt.invalid");
         }
     }
 
@@ -99,15 +111,16 @@ async function ValidateSocket(socket)
 {
     socket.on("auth.validate",async function(cookieEncrypted)
     {
-        AttachEncryptedChannel(socket);
-
-        let sesinfo = new SessionInfo(socket);
-        let cookie = socket.channel.DecryptMessage(cookieEncrypted);
-
-        authenticator.ValidateCookie(cookie,sesinfo,function(success,user,err)
+        if(AttachEncryptedChannel(socket))
         {
-            if(success) RegisterEvents(socket);
-        });
+            let sesinfo = new SessionInfo(socket);
+            let cookie = socket.channel.DecryptMessage(cookieEncrypted);
+
+            authenticator.ValidateCookie(cookie,sesinfo,function(success,user,err)
+            {
+                if(success) RegisterEvents(socket);
+            });
+        }
     });
 }
 
@@ -152,8 +165,9 @@ async function RegisterEvents(socket)
         });
     });
 
-    socket.on("software.versions.list",async function(sid)
+    socket.on("software.versions.list",async function(sidEn)
     {
+        let sid = socket.channel.DecryptMessage(sidEn);
         app.Database.Query("SELECT * FROM `slm_software_versions` WHERE `software`=" + SqlScape(sid) + " ORDER BY `date` DESC",function(results,fields,err)
         {
             if(err)

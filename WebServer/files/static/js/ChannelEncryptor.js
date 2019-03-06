@@ -54,6 +54,12 @@ eSocket.on("encrypt.success",function()
     window.location.reload();
 });
 
+eSocket.on("encrypt.invalid",function()
+{
+    SetCookie("channelId","");
+    window.location.reload();
+});
+
 function Encrypt(msg)
 {
     var msgStr = JSON.stringify(msg);
