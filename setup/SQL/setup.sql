@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS `slm_users` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT '',
   `login` TEXT NULL COMMENT '',
   `secret` LONGTEXT NULL COMMENT '',
+  `group` TEXT NULL COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '')
 ENGINE = InnoDB;
 
