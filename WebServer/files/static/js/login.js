@@ -31,7 +31,14 @@ function SecurePassword(login,password)
 socket.on("failed",function(message)
 {
     //Display message
-    console.log(Decrypt(message));
+    $(".darkner").hide();
+
+    var errMsg = Decrypt(message);
+
+    console.log(errMsg);
+
+    $("#error-message .message-body").html(errMsg);
+    $("#error-message").show();
 });
 
 socket.on("success",function(cookieEn)
