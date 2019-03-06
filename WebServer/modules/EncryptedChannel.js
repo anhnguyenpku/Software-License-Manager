@@ -118,8 +118,7 @@ class EncryptedChannel
 
     static CreateMasterKeys()
     {
-        var primeLength = 8;
-        let diff = crypto.createDiffieHellman(primeLength /*EncryptedChannel.primeLength*/);
+        let diff = crypto.createDiffieHellman(EncryptedChannel.primeLength);
         diff.generateKeys();
 
         return diff;
