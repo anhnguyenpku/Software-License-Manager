@@ -56,7 +56,6 @@ eSocket.on("encrypt.success",function()
 
 function Encrypt(msg)
 {
-    console.log(encryptionConstants);
     var msgStr = JSON.stringify(msg);
 
     var secret = Uint8Array.from(JSON.parse(sessionStorage.getItem("secret")).data);
@@ -68,7 +67,6 @@ function Encrypt(msg)
 
 function Decrypt(msg)
 {
-    console.log(encryptionConstants);
     var secret = Uint8Array.from(JSON.parse(sessionStorage.getItem("secret")).data);
 
     var cipher = crypto.createDecipheriv(encryptionConstants.cipher,secret,encryptionConstants.iv);

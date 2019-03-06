@@ -88,8 +88,6 @@ async function EncryptChannel(socket)
     let eCh = new EncryptedChannel(socket,masterKeys);
     encryptedChannels.push(eCh);
 
-    app.Log("Channels",encryptedChannels.length);
-
     socket.once("encrypt.encrypted",function()
     {
         let i = encryptedChannels.lastIndexOf(eCh);
@@ -290,9 +288,17 @@ function ParseCookies(socket)
 
 function ParseCookie(socket,cname)
 {
-    var cookies = socket.request.headers.cookie;
-    var cookiesObj = cookie.parse(cookies);
-    return cookiesObj[cname];
+    try
+    {
+        var cookies = socket.request.headers.cookie;
+        var cookiesObj = cookie.parse(cookies);
+        return cookiesObj[cname];
+    }
+    catch(err)
+    {
+        app.Error("Cookie Parser",err);
+        return null;
+    }
 }
 
 module.exports = {"Listen":Listen};
