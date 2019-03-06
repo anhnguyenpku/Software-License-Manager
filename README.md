@@ -12,3 +12,4 @@ To install SLM we suggest to grab a copy on the release page, so we can guarante
 3. Edit the config.json to your likings
 4. Run `npm run setup` to setup your copy IMPORTANT don't run this before setting up your config files.
 5. Run `npm start` to startup the platform.
+6. Go to http://[ip/url] and login with **admin** and **admin**
