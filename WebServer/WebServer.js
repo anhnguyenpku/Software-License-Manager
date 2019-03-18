@@ -411,4 +411,4 @@ function page404(req,res)
     res.status(404).send(builder.BuildErrorPage(404));
 }
 
-module.exports = {"StartServer": StartServer};
+module.exports = {"StartServer": StartServer, "SocketHandler":sockets};

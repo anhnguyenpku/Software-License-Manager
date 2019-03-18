@@ -1,5 +1,6 @@
 const Database = require('./Mysql');
 const Settings = require('./Settings');
+const WebServer = require('../WebServer/WebServer');
 
 class AppHandler
 {
@@ -7,6 +8,7 @@ class AppHandler
     {
         /** @type {Database} */
         this.Database;
+        /** @type {WebServer} */
         this.WebServer;
         this.FileServer;
         this.Config;

@@ -275,6 +275,16 @@ async function RegisterLoginPageEvents(socket)
     });
 }
 
+async function Broadcast(event)
+{
+    socketServers.root.emit(event);
+}
+
+async function Broadcast(event,data)
+{
+
+}
+
 /**
  * @param {String} id The socket id
  */
@@ -315,4 +325,11 @@ function ParseCookie(socket,cname)
     }
 }
 
-module.exports = {"Listen":Listen};
+module.exports = 
+    {
+        "Listen":Listen,
+        "servers":socketServers,
+        "Channels": encryptedChannels,
+        "GetChannel": GetChannel,
+        "Broadcast":Broadcast
+    };
