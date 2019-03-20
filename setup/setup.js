@@ -55,7 +55,7 @@ function AddAdminUserEntry()
         //Load The Authenticator
         let auth = new Auth(database,settings);
 
-        auth.Register(login,auth.Hmac(login,password),function(err)
+        auth.RegisterWithGroup(login,auth.Hmac(login,password),"admin",function(err)
         {
             database.Stop();
             

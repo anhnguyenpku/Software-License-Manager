@@ -88,14 +88,57 @@ class UserAuthenticator
      * @param {String} password A hashed string from the client.
      * @param {callbacks.Register} callback A callback method.
      */
-    async Register(login, password,callback)
+    async Register(login, password, callback)
     {
         let secret = this.SecurePassword(password);
 
-        this.Database.Query("INSERT IGNORE INTO `slm_users` (`login`,`secret`) VALUES (" + SqlScape(login) + ", " + SqlScape(secret) +")",function(results,fields,err)
+        this.Database.Query("INSERT IGNORE INTO `slm_users` (`login`,`secret`) VALUES (" + SqlScape(login) +
+                ", " + SqlScape(secret) +")",function(results,fields,err)
         {
             callback(err);
         });
+    }
+
+    /**
+     * Register a user and set them in a group
+     * @param {String} login A string with the login of the user.
+     * @param {String} password A hashed string from the cient.
+     * @param {String} group The id of the group the user should be added to
+     * @param {callbacks.Register} callback A callback method
+     */
+    async RegisterWithGroup(login, password, group, callback)
+    {
+        let secret = this.SecurePassword(password);
+        let auth = this;
+
+        this.Database.GetGroupByName(group,function(groups,fields,grErr)
+        {
+            if(grErr)
+            {
+                callback(grErr);
+                return;
+            }
+            else if(groups.length <= 0)
+            {
+                let nErr = new Error("This group doesn't exist!");
+                callback(nErr);
+                return;
+            }
+
+            var groupId = groups[0].id;
+
+            auth.Database.Query("INSERT IGNORE INTO `slm_users` (`login`,`secret`, `group`) VALUES (" + SqlScape(login) + 
+                ", " + SqlScape(secret) + ", " + SqlScape(groupId) + ")",function(results,fields,err)
+            {
+                if(err)
+                {
+                    callback(err);
+                    return;
+                }
+
+                callback(null);
+            });
+        });     
     }
 
     /**

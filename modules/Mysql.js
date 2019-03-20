@@ -1,4 +1,6 @@
 const mysql = require('mysql');
+const SqlScape = require('sqlstring').escape;
+
 let Logger;
 let pool;
 
@@ -74,6 +76,16 @@ async function QueryEmpty(querystring)
 
 }
 
+async function GetUserByLogin(login,callback)
+{
+    Query("SELECT * FROM `slm_users` WHERE `login`=" + SqlScape(login),callback);
+}
+
+async function GetGroupByName(name,callback)
+{
+    Query("SELECT * FROM `slm_groups` WHERE `name`=" + SqlScape(name),callback);
+}
+
 /**
  * 
  * @param {Array} results 
@@ -87,4 +99,11 @@ function Stop()
     pool.end();
 }
 
-module.exports = {"Query":Query,"QueryEmpty":QueryEmpty,"Start":Start,"Stop":Stop};
+module.exports = {
+        "Query":Query,
+        "QueryEmpty":QueryEmpty,
+        "Start":Start,
+        "Stop":Stop,
+        "GetUserByLogin": GetUserByLogin,
+        "GetGroupByName": GetGroupByName
+    };
