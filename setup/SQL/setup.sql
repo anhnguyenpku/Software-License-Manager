@@ -61,5 +61,3 @@ INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('encryption.cipher', 
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('encryption.keylength', '32');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('encryption.encoding', 'base64');
 INSERT IGNORE INTO `slm_settings` (`key`, `value`) VALUES ('encryption.primelength', '2048');
-
-INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (1,'admin','{"su":true}');

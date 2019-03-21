@@ -1,0 +1,12 @@
+{
+    "users":[
+        {"login": "admin","password": "admin", "group": "superusers"}
+    ],
+    "groups":
+    {
+        "superusers": "admin",
+        "readonly": "readonly",
+        "softwareManager": "manager",
+        "distributor": "distributor"
+    }
+}
