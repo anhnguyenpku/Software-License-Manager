@@ -360,6 +360,13 @@ web.all("/users/:user",function(req,res)
         ,{}));
 }); 
 
+//Permission routes
+
+web.all("/permissions",function(req,res)
+{
+    res.send(builder.BuildPage("Permissions",{},{}));
+});
+
 //Other Routes
 
 web.all("/filebrowser",function(req,res)

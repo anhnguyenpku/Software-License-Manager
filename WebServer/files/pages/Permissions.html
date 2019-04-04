@@ -1,0 +1,38 @@
+<h1 class="title is-2">All Groups <a id="addGroup" class="button is-success is-loading">Add</a></h1>
+
+<table class="table is-striped is-hoverable">
+    <thead>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Users</th>
+        <th>Permissions</th>
+        <th></th>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+<div id="permModal" class="modal {{modal-active}}">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Add Group</p>
+            <button class="delete modal-close-btn" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <form id="softform" action="/software/add" method="POST" encType="multipart/form-data">
+                <div class="field">
+                    <label class="label">Group Name*</label>
+                    <div class="control">
+                        <input class="input" type="text" placeholder="Name" name="name">
+                    </div>
+                </div>
+            </form>
+        </section>
+        <footer class="modal-card-foot buttons is-right">
+            <button class="button is-success software-submit">Add Group</button>
+            <button class="button modal-close-btn">Cancel</button>
+        </footer>   
+    </div>
+</div>

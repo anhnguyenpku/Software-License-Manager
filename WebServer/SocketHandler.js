@@ -191,7 +191,6 @@ async function RegisterEvents(socket)
         });
     });
 
-
     /* FILEBROWSER */
     socket.on("files.basefolder", async function()
     {
@@ -246,6 +245,17 @@ async function RegisterEvents(socket)
                 var encrypted = socket.channel.EncryptMessage("The password could not be changed!");
                 socket.emit("error.user.changePassword",encrypted);
             }
+        });
+    });
+
+    /* PERMISSIONS */
+
+    socket.on("permissions.list",function()
+    {
+        app.Database.Query("SELECT * FROM `slm_groups`",function(results,fields,err)
+        {
+            var encrypted = socket.channel.EncryptMessage(results);
+            socket.emit("permissions.list",encrypted);
         });
     });
 }
