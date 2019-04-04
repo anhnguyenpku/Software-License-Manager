@@ -374,6 +374,11 @@ web.all("/filebrowser",function(req,res)
     res.send(builder.BuildPage("FileBrowser",{},{}));
 });
 
+web.get("/analytics",function(req,res)
+{
+    res.send(builder.BuildPage("Analytics",{},{}));
+});
+
 web.get("/settings",function(req,res)
 {
     res.send(builder.BuildPage("Settings",{},{}));
