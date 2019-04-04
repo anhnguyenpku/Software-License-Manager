@@ -379,6 +379,11 @@ web.get("/settings",function(req,res)
     res.send(builder.BuildPage("Settings",{},{}));
 });
 
+web.get("/config",function(req,res)
+{
+    res.send(builder.BuildPage("Config",{},{}));
+});
+
 web.all("/system",function(req,res)
 {
     res.send(builder.BuildPage("System",builder.BuildSystemInfoOptions(app.Config.VersionInfo),{}));
