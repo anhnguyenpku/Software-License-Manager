@@ -95,6 +95,12 @@ class EncryptedChannel
      */
     EncryptMessage(msg)
     {
+        if(!this.secret)
+        {
+            this.socket.emit("encrypt.invalid");
+            return {"error":"There is no shared key"};
+        }
+
         let msgStr = JSON.stringify(msg);
         
         let cipher = crypto.createCipheriv(EncryptedChannel.cipher,this.secret,this.iv);
@@ -108,6 +114,12 @@ class EncryptedChannel
      */
     DecryptMessage(msg)
     {
+        if(!this.secret)
+        {
+            this.socket.emit("encrypt.invalid");
+            return {"error":"There is no shared key"};
+        }
+
         let decipher = crypto.createDecipheriv(EncryptedChannel.cipher,this.secret,this.iv);
         
         let out = decipher.update(msg,EncryptedChannel.encoding,'utf8');

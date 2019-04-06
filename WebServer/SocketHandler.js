@@ -82,7 +82,7 @@ async function EncryptChannel(socket)
 {
     //Check if client has got an id
     var channelID = ParseCookie(socket,"channelId");
-    if(channelID && channelID != null)
+    if(channelID != "" && channelID != null)
     {
         var channel = GetChannel(channelID)
         if(channel)

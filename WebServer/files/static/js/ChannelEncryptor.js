@@ -22,7 +22,6 @@ eSocket.on("encrypt.constants",function(data)
 eSocket.on("encrypt.keys",function(data)
 {
     SetCookie("channelId",eSocket.id);
-    sessionStorage.setItem("serverKeys", data);
 
     var primeBuffer = new Uint8Array(data.prime);
     var genBuffer = new Uint8Array(data.generator);
