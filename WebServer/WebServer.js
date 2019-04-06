@@ -10,6 +10,7 @@ const fileUpload = require('express-fileupload');
 
 //Modules
 const sockets = require('./SocketHandler');
+const Api = require('./Api');
 const TemplateBuilder = require('./modules/TemplateBuilder')
 const UserAuthenticator = require('./modules/UserAuthenticator');
 const SessionInfo = require('./modules/SessionInfo').SessionInfo;
@@ -97,11 +98,11 @@ async function CheckAuthentication(req,res,next)
 //Start the server
 function StartServer(appHandler)
 {
-    //save th apphandler reference in the module
+    //save the apphandler reference in the module
     app = appHandler;
 
     //Register Api Route and 404 Route
-    web.all("/" + app.Settings.GetSetting("web.apiroute") ,ApiHandler);
+    web.all("/" + app.Settings.GetSetting("web.apiroute") + ":request" ,ApiHandler);
     web.all("*", page404);
 
     //Initialize authenticator
@@ -417,8 +418,7 @@ web.all("/logout",async function(req,res)
 
 function ApiHandler(req,res)
 {
-    res.set('Content-Type', 'application/json; charset=utf-8');
-    res.send(({"ERRROR": "Api calls cannot be made yet."}));
+    Api(app,req,res);
 }
 
 //Error Pages
