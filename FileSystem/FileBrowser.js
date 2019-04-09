@@ -1,292 +1,192 @@
 const fs = require('fs');
+const path = require('path');
+
+const absolutePath = path.join(__dirname,"..","Content");
 
 class FileBrowser
 {
     /**
-     * Create a FileBrowser
-     * @param {String} basePath The absolute folder path, you cannot escape this path
+     * Create a filebrowser
+     * @param {String} path The relative path of the folder
+     * @param {String} parent The relative path of the parent folder
+     * @param {String} baseParent The relative path of the base parent folder, this is the folder the filebrowser cannot leave
      */
-    constructor(basePath)
+    constructor (folderPath = "/", parent = "/", baseParent = "/")
     {
-        this.BasePath = basePath;
-        this.BaseFolder = new Folder(basePath, "");
-    }
-
-    /**
-     * Check if the folder is the basepath.
-     * @param {Folder} folder The folder to check
-     * @returns {Boolean} Is Base Path
-     */
-    IsBasePath(folder)
-    {
-        return folder.Path == this.BasePath;
-    }
-
-    /**
-     * Check if the folder path is a valid path.
-     * @param {Folder} folder The folder to check
-     * @returns {Boolean} Is Valid Path
-     */
-    IsValidFolderPath(folder)
-    {
-        return !folder.RelativePath.contains("../") && folder.Path.split(this.BasePath).length > 1;
-    }
-
-    /**
-     * Check if the file path is a valid path.
-     * @param {File} file The file to check
-     * @returns {Boolean} Is Valid Path
-     */
-    IsValidFilePath(file)
-    {
-        return !file.RelativePath.contains("../") && file.Path.split(this.BasePath).length > 1;
-    }
-
-    /**
-     *  Get all files and folders from the base folder
-     * @returns {{"Files":File[],"Folders":Folder[]}}
-     */
-    ReadBaseFolder()
-    {
-        return this.BaseFolder.ReadFolder();
-    }
-
-    /**
-     *  Get all files and folders from the base folder, safe to send to a client
-     * @returns {{"Files":BrowserSafeFile[],"Folders":BrowserSafeFolder[],"folder":BrowserSafeFolder}}
-     */
-    ReadBaseFolderSafe()
-    {
-        return this.BaseFolder.ReadFolderSafe(this);
-    }
-
-    /**
-     *  Get all files and folders from a parent folder
-     * @param {String} path A relative path, from the basefolder, of the parent folder
-     * @returns {{"Files":File[],"Folders":Folder[]}}
-     */
-    ReadFolder(path)
-    {
-        let f = new Folder(this.BasePath + "/" + path, path);
-
-        if(this.IsValidFolderPath(f))
+        if(FileBrowser.IsValidParent(baseParent) && 
+            FileBrowser.IsValid(parent,baseParent) && FileBrowser.IsValid(folderPath, parent))
         {
-            return f.ReadFolder();
+            this.path = folderPath;
+            this.parent = parent;
+            this.base = baseParent;
         }
         else
         {
-            return {"Files":[],"Folders":[]};
+            this.path = "/";
+            this.parent = "/";
+            this.base = "/";
         }
     }
 
     /**
-     *  Get all files and folders from a parent folder, safe to send to a client
-     * @param {String} path A relative path, from the basefolder, of the parent folder
-     * @returns {{"Files":BrowserSafeFile[],"Folders":BrowserSafeFolder[],"folder":BrowserSafeFolder}}
+     * Read all files and folders in the current folder
+     * @param {function(Error,{"path":String ,"folders": Folder[], "files": File[]})} callback 
      */
-    ReadFolderSafe(path)
+    async ReadFolder(callback)
     {
-        let f = new Folder(this.BasePath + "/" + path, path);
+        const browser = this;
 
-        if(this.IsValidFolderPath(f))
+        var data = {"path":browser.GetRelativePath() ,"folders": [], "files":[]};
+        if(!FileBrowser.PathEquals(this.path,this.parent))
         {
-            return f.ReadFolderSafe(this);
+            data.folders.push(new Folder( path.join(browser.GetRelativePath() , ".."),"..."));
         }
-        else
+
+        fs.readdir(this.GetAbsolutePath(),function(err,files)
         {
-            return {"Files":[],"Folders":[]};
+            if(err)
+            {
+                callback(err,null);
+                return;
+            }
+
+            for (let i = 0; i < files.length; i++)
+            {
+                const file = files[i];
+                const filePath = browser.GetAbsoluteItemPath(file);
+                const relPath = browser.GetRelativeItemPath(file);
+                const info = fs.lstatSync(filePath);
+                
+                if(info.isDirectory())
+                {
+                    data.folders.push(new Folder(relPath,file));
+                }
+                else if(info.isFile())
+                {
+                    data.files.push(new File(relPath,file));
+                }
+            }
+
+            callback(null,data);
+        });
+    }
+
+    /**
+     * Get the absolute path of the FileBrowser
+     * @returns {String}
+     */
+    GetAbsolutePath()
+    {
+        return path.join(absolutePath,this.base,this.path);
+    }
+
+    /**
+     * Get the relative path of the FileBrowser
+     * @returns {String}
+     */
+    GetRelativePath()
+    {
+        return this.path;
+    }
+
+    /**
+     * Get the absolute path for a given item
+     * @param {String} item Name of the item
+     * @returns {String}
+     */
+    GetAbsoluteItemPath(item)
+    {
+        return path.join(absolutePath,this.base,this.path,item);
+    }
+
+    /**
+     * Get the relative path for a given item
+     * @param {String} item Name of the item
+     * @returns {String}
+     */
+    GetRelativeItemPath(item)
+    {
+        return path.join(this.path,item);
+    }
+
+    /**
+     * Create a new FileBowser that is restricted to the given path
+     * @param {String[]} restrictedPaths relative path of the restricted folder of the new FileBrowser
+     * @param {Strin} folderPath relative path of the new FileBrowser, relative to the restricted path
+     * @returns {FileBrowser}
+     */
+    GetRestrictedFileBrowser(restrictedPaths,folderPath)
+    {
+        var resPath = "";
+        
+        for (let i = 0; i < restrictedPaths.length; i++)
+        {
+            const p = restrictedPaths[i];
+            resPath = path.join(resPath,p);
         }
+        
+        var relPath = folderPath;
+        
+        return new FileBrowser(relPath,path.join(relPath,'..'),resPath);
+    }
+
+    /**
+     * Create a new Filebrowser
+     * @param {String} path Relative path of the new FileBrowser
+     * @returns {FileBrowser}
+     */
+    GetSubFileBrowser(path)
+    {
+        return new FileBrowser(path,this.path,this.base);
+    }
+
+    /**
+     * Checks if two relative paths are equal
+     * @param {String} path1 First relative path
+     * @param {String} path2 Seccond relaive path
+     * @returns {Boolean}
+     */
+    static PathEquals(path1, path2)
+    {
+        return path.join(absolutePath,path1) == path.join(absolutePath,path2);
+    }
+
+    /**
+     * Check if the relative folderpath is a valid folder path
+     * @param {String} folderPath The realtive folder path
+     * @param {String} parent The parents relative folder path
+     */
+    static IsValid(folderPath, parent)
+    {
+        var absParent = path.join(absolutePath,parent);
+        return path.join(absParent,folderPath).contains(absParent);
+    }
+
+    /**
+     * Check if the parents relative folderpath is a valid folder path
+     * @param {String} folderPath The parents relative folder path
+     */
+    static IsValidParent(folderPath)
+    {
+        return path.join(absolutePath,folderPath).contains(absolutePath);
     }
 }
 
 class Folder
 {
-    /**
-     * 
-     * @param {String} path 
-     * @param {String} relativePath 
-     */
-    constructor(path,relativePath)
+    constructor(path,name)
     {
-        this.Path = path;
-        this.RelativePath = relativePath;
-
-        this.Stats = fs.statSync(path);
-    }
-
-    /**
-     * Get all files and folders from a parent folder
-     * @returns {{"Files":File[],"Folders":Folder[]}}
-     */
-    ReadFolder()
-    {
-        let pathStrings = fs.readdirSync(this.Path);
-
-        let files = [];
-        let folders = [];
-
-        for (let i = 0; i < pathStrings.length; i++)
-        {
-            const path = pathStrings[i];
-            
-            let relPath = this.RelativePath + "/" + path;
-            let absPath = this.Path + "/" + path;
-
-            if(fs.statSync(path).isDirectory())
-            {
-                let folder = new Folder(absPath,relPath);
-                folders.push(folder);
-            }
-            else
-            {
-                let file = new File(absPath,relPath);
-                files.push(file);
-            }
-        }
-
-        return {"Files": files, "Folders" : folders};
-    }
-
-    /**
-     * Get all files and folders from a parent folder, safe to send to a client
-     * @param {FileBrowser} fileBrowser
-     * @returns {{"Files":BrowserSafeFile[],"Folders":BrowserSafeFolder[],"folder":BrowserSafeFolder}}
-     */
-    ReadFolderSafe(fileBrowser)
-    {
-        let pathStrings = fs.readdirSync(this.Path);
-
-        let files = [];
-        let folders = [];
-
-        for (let i = 0; i < pathStrings.length; i++)
-        {
-            const path = pathStrings[i];
-            
-            let relPath = this.RelativePath + "/" + path;
-            let absPath = this.Path + "/" + path;
-
-            if(fs.statSync(absPath).isDirectory())
-            {
-                let folder = new Folder(absPath,relPath).GetBrowserSafeFolder();
-                folders.push(folder);
-            }
-            else
-            {
-                let file = new File(absPath,relPath).GetBrowserSafeFile();
-                files.push(file);
-            }
-        }
-
-        return {"Files": files, "Folders" : folders, "folder": this.GetParentFolder(fileBrowser).GetBrowserSafeFolder()};
-    }
-
-    /**
-     * Get the name of the Folder (name)
-     * @returns {String} Foldername
-     */
-    GetName()
-    {
-        let pathPieces = this.RelativePath.split('/');
-
-        //Get last entry
-        return pathPieces[pathPieces.length - 1];
-    }
-
-    /**
-     * Returns a folder safe to send to a client
-     * @returns {BrowserrSafeFolder} folder
-     */
-    GetBrowserSafeFolder()
-    {
-        return new BrowserSafeFolder(this);
-    }
-
-    /**
-     * Get the parent folder of this folder
-     * @param {FileBrowser} fileBrowser 
-     */
-    GetParentFolder(fileBrowser)
-    {
-        let splits = this.RelativePath.split("/");
-        let end = splits[splits.length -1];
-
-        let path = this.Path.substr(0, this.Path.length - end.length);
-        let relPath = this.RelativePath.substr(0, this.RelativePath.length - end.length);
-
-        let folder = new Folder(path,relPath);
-
-        if(fileBrowser.IsValidFolderPath(folder))
-        {
-            return folder;
-        }
-        else
-        {
-            return this;
-        }
+        this.path = path;
+        this.name = name;
     }
 }
 
 class File
 {
-    /**
-     * 
-     * @param {String} path 
-     * @param {String} relativePath 
-     */
-    constructor(path,relativePath)
+    constructor(path,name)
     {
-        this.Path = path;
-        this.RelativePath = relativePath;
-
-        this.Stats = fs.statSync(path);
-    }
-
-    /**
-     * Get the name of the File (name).(extension)
-     * @returns {String} Filename
-     */
-    GetName()
-    {
-        let pathPieces = this.RelativePath.split('/');
-
-        //Get last entry
-        return pathPieces[pathPieces.length - 1];
-    }
-
-    /**
-     * Returns a file safe to send to a client
-     * @returns {BrowserrSafeFile} file
-     */
-    GetBrowserSafeFile()
-    {
-        return new BrowserSafeFile(this);
-    }
-}
-
-class BrowserSafeFolder
-{
-    /**
-     * Create a browser safe folder
-     * @param {Folder} folder 
-     */
-    constructor(folder)
-    {
-        this.Path = folder.RelativePath;
-        this.Name = folder.GetName();
-    }
-}
-
-class BrowserSafeFile
-{
-    /**
-     * Create a browser safe folder
-     * @param {File} file 
-     */
-    constructor(file)
-    {
-        this.Path = file.RelativePath;
-        this.Name = file.GetName();
+        this.path = path;
+        this.name = name;
     }
 }
 

@@ -27,6 +27,12 @@ let authenticator;
 let encryptedChannels = [];
 let masterKeys;
 
+/**
+ * 
+ * @param {*} server 
+ * @param {App} appHandler 
+ * @param {UserAuthenticator} auth 
+ */
 function Listen(server,appHandler,auth)
 {
     //Save References
@@ -192,19 +198,45 @@ async function RegisterEvents(socket)
     });
 
     /* FILEBROWSER */
+    //TODO: Add error handling
+    //TODO: Add permissions
     socket.on("files.basefolder", async function()
     {
-        let items = app.BaseFileBrowser.ReadBaseFolderSafe();
-        var encrypted = socket.channel.EncryptMessage(items);
-        socket.emit("files.folderitems",encrypted);
+        app.BaseFileBrowser.ReadFolder(function(err,data)
+        {
+            var encrypted = socket.channel.EncryptMessage(data);
+            socket.emit("files.folderitems",encrypted);
+        });
     }); 
 
-    socket.on("files.folder",async function(relPath)
+    socket.on("files.folder",async function(enpath)
     {
-        let items = app.BaseFileBrowser.ReadFolderSafe(relPath);
+        var relPath = socket.channel.DecryptMessage(enpath);
+        app.BaseFileBrowser.GetSubFileBrowser(relPath).ReadFolder(function(err,items)
+        {
+            var encrypted = socket.channel.EncryptMessage(items);
+            socket.emit("files.folderitems",encrypted);
+        });
+    });
 
-        var encrypted = socket.channel.EncryptMessage(items);
-        socket.emit("files.folderitems",encrypted);
+    socket.on("files.software",async function(enpath)
+    {
+        var path = socket.channel.DecryptMessage(enpath);
+        app.BaseFileBrowser.GetRestrictedFileBrowser([path.software],path.path).ReadFolder(function(err,items)
+        {
+            var encrypted = socket.channel.EncryptMessage(items);
+            socket.emit("files.software",encrypted);
+        });
+    });
+
+    socket.on("files.version",async function(enpath)
+    {
+        var path = socket.channel.DecryptMessage(enpath);
+        app.BaseFileBrowser.GetRestrictedFileBrowser([path.software,path.version],path.path).ReadFolder(function(err,items)
+        {
+            var encrypted = socket.channel.EncryptMessage(items);
+            socket.emit("files.version",encrypted);
+        });
     });
 
     /* USER */

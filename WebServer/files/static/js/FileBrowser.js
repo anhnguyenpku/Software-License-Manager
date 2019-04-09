@@ -8,30 +8,24 @@ encryptionEvents.on("loaded",function()
 socket.on("files.folderitems",function(itemsEn)
 {
     var items = Decrypt(itemsEn);
-    
+
     $('tbody').empty();
 
     var html = '';
 
-    if(items.folder && items.folder.Path != currentPath)
+    for (let i = 0; i < items.folders.length; i++)
     {
-        let folder = items.folder;
-        html += "<tr class='folder' path='" + folder.Path + "'><td><img width='60%' src='/images/icons/folder.svg'></td><td>...</td><td></td></tr>";;
-    }
-
-    for (let i = 0; i < items.Folders.length; i++)
-    {
-        const folder = items.Folders[i];
+        const folder = items.folders[i];
         
-        html += "<tr class='folder' path='" + folder.Path + "'><td><img width='60%' src='/images/icons/folder.svg'></td><td>" + folder.Name + "</td><td></td></tr>";
+        html += "<tr class='folder' path='" + folder.path + "'><td><img width='60%' src='/images/icons/folder.svg'></td><td>" + folder.name + "</td><td></td></tr>";
         
     }
 
-    for (let i = 0; i < items.Files.length; i++)
+    for (let i = 0; i < items.files.length; i++)
     {
-        const file = items.Files[i];
+        const file = items.files[i];
 
-        html += "<tr><td></td><td>" + file.Name + "</td><td></td></tr>";
+        html += "<tr><td></td><td>" + file.name + "</td><td></td></tr>";
     }
 
     $('tbody').append(html);
@@ -42,7 +36,7 @@ socket.on("files.folderitems",function(itemsEn)
     $(".folder").click(function()
     {
         currentPath = $(this).attr("path");
-        socket.emit("files.folder",$(this).attr("path"));
+        socket.emit("files.folder",Encrypt($(this).attr("path")));
 
         $("#upload").toggleClass("is-loading",true);
     });

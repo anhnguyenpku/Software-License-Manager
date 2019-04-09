@@ -14,9 +14,7 @@ logger.Log("Loader","Loaded AppHandler");
 
 //Load FileBrowser Class
 const FileBrowser = require('./FileSystem/FileBrowser');
-
-app.FileBrowser = FileBrowser;
-app.BaseFileBrowser = new FileBrowser(__dirname + "/Content");
+app.BaseFileBrowser = new FileBrowser();
 
 logger.Log("Loader", "Loaded FileBrowser");
 

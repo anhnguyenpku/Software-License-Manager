@@ -1,6 +1,7 @@
 const Database = require('./Mysql');
 const Settings = require('./Settings');
 const WebServer = require('../WebServer/WebServer');
+const FileBrowser = require('../FileSystem/FileBrowser');
 
 class AppHandler
 {
@@ -16,7 +17,7 @@ class AppHandler
         /** @type {Settings} */
         this.Settings;
         this.FileSystem;
-        this.FileBrowser;
+        /**@type {FileBrowser} */
         this.BaseFileBrowser;
     }
 
@@ -24,7 +25,7 @@ class AppHandler
     {
         this.Logger.Log(source,message);
     }
-
+    
     Error(source, message)
     {
         this.Logger.Error(source,message);
