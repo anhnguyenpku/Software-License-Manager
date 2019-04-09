@@ -204,6 +204,12 @@ async function RegisterEvents(socket)
     {
         app.BaseFileBrowser.ReadFolder(function(err,data)
         {
+            if(err)
+            {
+                app.Error("FileBrowser",err.message);
+                return;
+            }
+
             var encrypted = socket.channel.EncryptMessage(data);
             socket.emit("files.folderitems",encrypted);
         });
@@ -214,6 +220,12 @@ async function RegisterEvents(socket)
         var relPath = socket.channel.DecryptMessage(enpath);
         app.BaseFileBrowser.GetSubFileBrowser(relPath).ReadFolder(function(err,items)
         {
+            if(err)
+            {
+                app.Error("FileBrowser",err.message);
+                return;
+            }
+
             var encrypted = socket.channel.EncryptMessage(items);
             socket.emit("files.folderitems",encrypted);
         });
@@ -224,6 +236,12 @@ async function RegisterEvents(socket)
         var path = socket.channel.DecryptMessage(enpath);
         app.BaseFileBrowser.GetRestrictedFileBrowser([path.software],path.path).ReadFolder(function(err,items)
         {
+            if(err)
+            {
+                app.Error("FileBrowser",err.message);
+                return;
+            }
+
             var encrypted = socket.channel.EncryptMessage(items);
             socket.emit("files.software",encrypted);
         });
@@ -234,6 +252,12 @@ async function RegisterEvents(socket)
         var path = socket.channel.DecryptMessage(enpath);
         app.BaseFileBrowser.GetRestrictedFileBrowser([path.software,path.version],path.path).ReadFolder(function(err,items)
         {
+            if(err)
+            {
+                app.Error("FileBrowser",err.message);
+                return;
+            }
+            
             var encrypted = socket.channel.EncryptMessage(items);
             socket.emit("files.version",encrypted);
         });
@@ -324,7 +348,8 @@ async function Broadcast(event)
 
 async function Broadcast(event,data)
 {
-
+    //TODO: Encrypt for every socket
+    socketServers.root.emit(event,data);
 }
 
 /**
