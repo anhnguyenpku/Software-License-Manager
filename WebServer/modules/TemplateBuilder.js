@@ -36,7 +36,9 @@ class TemplateBuilder
             if(options.subMenu)
             {
                 menuoptions[options.subMenu] = "is-active";
-                menuoptions[options.subMenu.toLowerCase() + "-sub-menu"] = fs.readFileSync(submenuFolder + options.subMenu + ".html").toString();
+
+                var renderedSubMenu = mustache.render(fs.readFileSync(submenuFolder + options.subMenu + ".html").toString(),buildOptions);
+                menuoptions[options.subMenu.toLowerCase() + "-sub-menu"] = renderedSubMenu;
             }
         }
 

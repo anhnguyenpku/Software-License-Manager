@@ -347,18 +347,51 @@ web.all("/users",function(req,res)
     res.send(builder.BuildPage("Users",
     {
         "userpanel":"is-active"
-    },{}));
+    },
+    {
+        "subMenu":"Users"
+    }));
 });
 
-web.all("/users/:user",function(req,res)
+web.all("/users/add",function(req,res)
+{
+    res.send(builder.BuildPage("Users",
+    {
+        "userpanel":"is-active",
+        "modal-active":"is-active"
+    },
+    {
+        "subMenu":"Users"
+    }));
+});
+
+web.all("/user/profile",function(req,res)
 {
     res.send(builder.BuildPage("UserProfile",
-        {
-            "title": "User: " + req.user.login,
-            "username": req.user.login,
-            "userpanel":"is-active"
-        }
-        ,{}));
+    {
+        "title": "User: " + req.user.login,
+        "username": req.user.login,
+        "userpanel":"is-active",
+        "Profile":"is-active"
+    }
+    ,
+    {
+        "subMenu":"Users"
+    }));
+});
+
+web.all("/user/:user",function(req,res)
+{
+    res.send(builder.BuildPage("UserProfile",
+    {
+        "title": "User: " + req.user.login,
+        "username": req.user.login,
+        "userpanel":"is-active"
+    }
+    ,
+    {
+        "subMenu":"Users"
+    }));
 }); 
 
 //Permission routes
