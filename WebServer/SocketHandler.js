@@ -197,8 +197,26 @@ async function RegisterEvents(socket)
         });
     });
 
+    /* CONFIG */
+
+    socket.on("config.list",async function()
+    {
+        var strippedConfig = {};
+        
+        for(let key in app.Config)
+        {
+            if(key != "VersionInfo")
+            {
+                strippedConfig[key] = app.Config[key];
+            }
+        }
+
+        var encrypted = socket.channel.EncryptMessage(strippedConfig);
+
+        socket.emit("config.list",encrypted);
+    });
+
     /* FILEBROWSER */
-    //TODO: Add error handling
     //TODO: Add permissions
     socket.on("files.basefolder", async function()
     {
@@ -257,7 +275,7 @@ async function RegisterEvents(socket)
                 app.Error("FileBrowser",err.message);
                 return;
             }
-            
+
             var encrypted = socket.channel.EncryptMessage(items);
             socket.emit("files.version",encrypted);
         });
