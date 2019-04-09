@@ -8,5 +8,6 @@
     [
         {"Name": "Mathias Maes", "Alias":"WatcherWhale", "Link": "https://github.com/WatcherWhale"}
     ],
-    "License": "MIT"
+    "License": "MIT",
+    "Repo": "https://github.com/WatcherWhale/Software-License-Manager.git"
 }
