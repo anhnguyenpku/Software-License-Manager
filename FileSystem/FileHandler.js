@@ -3,8 +3,8 @@ const SqlScape = require('sqlstring').escape;
 
 const ContentFolder = __dirname + "/../Content/";
 
-let app;
-let fh;
+var app;
+var fh;
 
 class FileHandler
 {
@@ -48,7 +48,7 @@ class FileHandler
 
             let updateQuery = "UPDATE `slm_software` SET `lastVersion`='" + vid + "' WHERE `id`='" + sid + "';";
 
-            app.Database.QueryEmpty(insertQuery + updateQuery,function(r,f,err)
+            app.Database.Query(insertQuery + updateQuery,function(r,f,err)
             {
                 if(err)
                 {
@@ -58,18 +58,25 @@ class FileHandler
 
                 fs.mkdirSync(ContentFolder + sid + "/" + vid);
 
-                file.mv(ContentFolder + sid + "/" + vid + "/" + file.name,function(err)
+                if(file)
                 {
-                    if(err)
+                    file.mv(ContentFolder + sid + "/" + vid + "/" + file.name,function(err)
                     {
-                        app.Error("FileSystem", err.message);
+                        if(err)
+                        {
+                            app.Error("FileSystem", err.message);
 
-                        callback(null,null);
-                        return;
-                    }
+                            callback(null,null);
+                            return;
+                        }
 
+                        callback(sid,vid);
+                    });
+                }
+                else
+                {
                     callback(sid,vid);
-                });
+                }
             });
         });
     }
