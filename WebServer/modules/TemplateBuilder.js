@@ -25,9 +25,8 @@ class TemplateBuilder
         this.Refresh();
 
         let pageHtml = fs.readFileSync(pagesFolder + page + ".html").toString();
-
-        let menuoptions = {};
-        if(!buildOptions[page]) menuoptions[page] = "is-active";
+        
+        if(!buildOptions[page]) buildOptions[page] = "is-active";
 
         if(!buildOptions.title) buildOptions.title = page;        
 
@@ -35,15 +34,15 @@ class TemplateBuilder
         {
             if(options.subMenu)
             {
-                if(!options.subMenuInActive) menuoptions[options.subMenu] = "is-active";
+                if(!options.subMenuInActive) buildOptions[options.subMenu] = "is-active";
 
                 var renderedSubMenu = mustache.render(fs.readFileSync(submenuFolder + options.subMenu + ".html").toString(),buildOptions);
-                menuoptions[options.subMenu.toLowerCase() + "-sub-menu"] = renderedSubMenu;
+                buildOptions[options.subMenu.toLowerCase() + "-sub-menu"] = renderedSubMenu;
             }
         }
 
 
-        buildOptions.menu = mustache.to_html(this.MenuTemplate,menuoptions);
+        buildOptions.menu = mustache.to_html(this.MenuTemplate,buildOptions);
 
         if(fs.existsSync(__dirname + "/../files/static/js/" + page + ".js")) buildOptions.scripts = '<script src="/js/' + page + '.js"></script>';
         if(fs.existsSync(__dirname + "/../files/static/css/" + page + ".css")) buildOptions.styles = '<link rel="stylesheet" href="/css/' + page + '.css">';
