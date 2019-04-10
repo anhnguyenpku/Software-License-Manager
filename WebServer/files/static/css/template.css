@@ -119,3 +119,8 @@ tr.folder
 {
     cursor: pointer;
 }
+
+abbr
+{
+    text-decoration: none;
+}

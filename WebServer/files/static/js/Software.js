@@ -1,6 +1,9 @@
+var searcher = new Searcher("#search input",[]);
+
 encryptionEvents.on("loaded", function()
 {
     socket.emit("software.list");
+    searcher.AddEvents();
 
     $(".software-submit").click(function()
     {
@@ -11,7 +14,20 @@ encryptionEvents.on("loaded", function()
 socket.on("software.list",function(listEn)
 {
     var list = Decrypt(listEn);
-    
+    searcher.SetObject(list);
+
+    UpdateTable(list);
+});
+
+searcher.events.on("found",function(list)
+{
+    UpdateTable(list);
+});
+
+function UpdateTable(list)
+{
+    $("table tbody").empty();
+
     for (let i = 0; i < list.length; i++)
     {
         const softItem = list[i];
@@ -27,4 +43,4 @@ socket.on("software.list",function(listEn)
             $("#softModal").toggleClass("is-active",true);
         });
     }
-});
+}
