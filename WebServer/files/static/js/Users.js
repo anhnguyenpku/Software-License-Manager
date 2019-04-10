@@ -32,4 +32,9 @@ function UpdateTable(userList)
         $("table tbody").append(html);
         $("#addUser").toggleClass("is-loading",false);
     }
+
+    $("table.is-interactable td").dblclick(function()
+    {
+        $(this).parent().parent().find("a")[0].click();
+    });
 }

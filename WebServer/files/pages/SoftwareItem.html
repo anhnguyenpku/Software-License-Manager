@@ -76,36 +76,35 @@
 <h1 class="title is-3">Danger Zone</h1>
 
 <div class="columns is-fluid is-multiline">
-    <div class="column is-5">
-        <article class="message is-info">
+    <div class="column is-5 is-flex">
+        <article class="message is-info has-action">
             <div class="message-header">
                 <p>Deactivate all keys</p>
             </div>
-                <div class="message-body">
-                    If you deactivate all keys for {{software-name}} all existing keys will become invalid.
-                    Existing activated keys will also become invalid, this means all software will be deactivated.
-                    Also all key reccords will be removed from the database.<br/>
-                    <strong>You will get a verification if you are sure you want to deactivate all keys for {{software-name}}.</strong>
-                    <div class="small-spacer"></div>
-
-                    <a href="#" class="button is-info">Deactivate all keys</a>
-                </div>
+            <div class="message-body">
+                If you deactivate all keys for {{software-name}} all existing keys will become invalid.
+                Existing activated keys will also become invalid, this means all software will be deactivated.
+                Also all key reccords will be removed from the database.<br/>
+                <strong>You will get a verification if you are sure you want to deactivate all keys for {{software-name}}.</strong>
+            </div>
+            <div class="action">
+                <a href="#" class="button is-info is-pulled-right">Deactivate all keys</a>
+            </div>
         </article>
     </div>
-    <div class="column is-5"></div>
-    <div class="column is-5">
-        <article class="message is-danger">
+    <div class="column is-5 is-flex">
+        <article class="message is-danger has-action">
             <div class="message-header">
                 <p>Delete {{software-name}}</p>
             </div>
-                <div class="message-body">
-                    If you delete {{software-name}} it will be deleted permanatly, users won't be able to activate the product anymore.
-                    Existing users would probably not be able to start their applications anymore. Also all keys and files will be removed from the server.<br/>
-                    <strong>You will get a verification if you are sure you want to delete {{software-name}}.</strong>
-                    <div class="small-spacer"></div>
-
-                    <a href="#" class="button is-danger">Delete {{software-name}}</a>
-                </div>
+            <div class="message-body">
+                If you delete {{software-name}} it will be deleted permanatly, users won't be able to activate the product anymore.
+                Existing users would probably not be able to start their applications anymore. Also all keys and files will be removed from the server.<br/>
+                <strong>You will get a verification if you are sure you want to delete {{software-name}}.</strong>
+            </div>
+            <div class="action">
+                <a href="#" class="button is-danger is-pulled-right">Delete {{software-name}}</a>
+            </div>
         </article>
     </div>
 </div>
@@ -152,3 +151,5 @@
         </footer>   
     </div>
 </div>
+
+<div class="spacer"></div>

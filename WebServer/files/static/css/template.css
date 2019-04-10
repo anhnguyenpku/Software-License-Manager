@@ -124,3 +124,20 @@ abbr
 {
     text-decoration: none;
 }
+
+table.is-interactable td
+{
+    cursor: pointer;
+}
+
+article.message.has-action
+{
+    display: inline-grid;
+}
+
+article.message.has-action .action
+{
+    align-self: end;
+    padding: 1.25em 1.5em;
+    padding-top: 0px;
+}

@@ -43,4 +43,9 @@ function UpdateTable(list)
             $("#softModal").toggleClass("is-active",true);
         });
     }
+
+    $("table.is-interactable td").dblclick(function()
+    {
+        $(this).parent().parent().find("a")[0].click();
+    });
 }
