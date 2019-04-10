@@ -27,7 +27,7 @@ class TemplateBuilder
         let pageHtml = fs.readFileSync(pagesFolder + page + ".html").toString();
 
         let menuoptions = {};
-        menuoptions[page] = "is-active";
+        if(!buildOptions[page]) menuoptions[page] = "is-active";
 
         if(!buildOptions.title) buildOptions.title = page;        
 
@@ -35,7 +35,7 @@ class TemplateBuilder
         {
             if(options.subMenu)
             {
-                menuoptions[options.subMenu] = "is-active";
+                if(!options.subMenuInActive) menuoptions[options.subMenu] = "is-active";
 
                 var renderedSubMenu = mustache.render(fs.readFileSync(submenuFolder + options.subMenu + ".html").toString(),buildOptions);
                 menuoptions[options.subMenu.toLowerCase() + "-sub-menu"] = renderedSubMenu;

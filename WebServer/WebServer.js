@@ -136,10 +136,7 @@ web.all("/",async function(req,res)
 
 web.all("/software",async function(req,res)
 {
-    res.send(builder.BuildPage("Software",
-    {
-        "softpanel":"is-active"
-    }, 
+    res.send(builder.BuildPage("Software",{}, 
     {
         "subMenu":"Software"
     }));
@@ -149,7 +146,6 @@ web.get("/software/add",async function(req,res)
 {
     res.send(builder.BuildPage("Software",
     {
-        "softpanel":"is-active",
         "modal-active":"is-active"
     }, 
     {
@@ -251,7 +247,6 @@ web.get("/software/:sid/version/:vid",async function(req,res)
         {
             res.send(builder.BuildPage("VersionItem",
             {
-                "softpanel":"is-active",
                 "title": software[0].name + " " + versions[0].label,
                 "software-name":software[0].name,
                 "software-distributor":software[0].distributor,
@@ -328,7 +323,6 @@ web.get("/software/:id",function(req,res)
 
         res.send(builder.BuildPage("SoftwareItem",
             {
-                "softpanel":"is-active",
                 "title":"Software - " + results[0].name,
                 "software-name":results[0].name,
                 "software-distributor":results[0].distributor,
@@ -344,10 +338,7 @@ web.get("/software/:id",function(req,res)
 
 web.all("/users",function(req,res)
 {
-    res.send(builder.BuildPage("Users",
-    {
-        "userpanel":"is-active"
-    },
+    res.send(builder.BuildPage("Users",{},
     {
         "subMenu":"Users"
     }));
@@ -357,7 +348,6 @@ web.all("/users/add",function(req,res)
 {
     res.send(builder.BuildPage("Users",
     {
-        "userpanel":"is-active",
         "modal-active":"is-active"
     },
     {
@@ -371,12 +361,12 @@ web.all("/user/profile",function(req,res)
     {
         "title": "User: " + req.user.login,
         "username": req.user.login,
-        "userpanel":"is-active",
         "Profile":"is-active"
     }
     ,
     {
-        "subMenu":"Users"
+        "subMenu":"Users",
+        "subMenuInActive": true
     }));
 });
 
@@ -385,8 +375,7 @@ web.all("/user/:user",function(req,res)
     res.send(builder.BuildPage("UserProfile",
     {
         "title": "User: " + req.user.login,
-        "username": req.user.login,
-        "userpanel":"is-active"
+        "username": req.user.login
     }
     ,
     {
