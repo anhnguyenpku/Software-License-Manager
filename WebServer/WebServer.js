@@ -111,12 +111,18 @@ function StartServer(appHandler)
     //Start the web- and socketserver
     if(app.Config.ssl.enabled)
     {
-        server = https.createServer(app.Config.ReadSSL(),web).listen(app.Config.web.port);
+        server = https.createServer(app.Config.ReadSSL(),web).listen(app.Config.web.httpsPort);
+        
+        http.createServer(function(req,res)
+        {
+            res.writeHead(301, { Location: "https://" + req.headers.host + req.url });
+            res.end();
+        }).listen(app.Config.web.httpPort);
     }
     else
     {
         server = http.Server(web);
-        server.listen(app.Config.web.port);
+        server.listen(app.Config.web.httpPort);
     }
 
     sockets.Listen(server,app,authenticator);
