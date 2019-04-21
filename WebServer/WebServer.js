@@ -14,6 +14,7 @@ const Api = require('./Api');
 const TemplateBuilder = require('./modules/TemplateBuilder')
 const UserAuthenticator = require('./modules/UserAuthenticator');
 const SessionInfo = require('./modules/SessionInfo').SessionInfo;
+const User = require('./modules/User');
 
 //Objects
 var builder = new TemplateBuilder();
@@ -101,12 +102,15 @@ function StartServer(appHandler)
     //save the apphandler reference in the module
     app = appHandler;
 
+    //Setup User Module
+    User.SetupModule(app);
+
     //Register Api Route and 404 Route
     web.all("/" + app.Settings.GetSetting("web.apiroute") + ":request" ,ApiHandler);
     web.all("*", page404);
 
     //Initialize authenticator
-    authenticator = new UserAuthenticator(app.Database,app.Settings);
+    authenticator = new UserAuthenticator(app);
 
     //Start the web- and socketserver
     if(app.Config.ssl.enabled)
@@ -367,6 +371,7 @@ web.all("/user/profile",function(req,res)
     {
         "title": "User: " + req.user.login,
         "username": req.user.login,
+        "id": req.user.id,
         "Profile":"is-active"
     }
     ,
@@ -378,15 +383,29 @@ web.all("/user/profile",function(req,res)
 
 web.all("/user/:user",function(req,res)
 {
-    res.send(builder.BuildPage("UserProfile",
+    var user = new User(req.params.user);
+    user.Load(function(err)
     {
-        "title": "User: " + req.user.login,
-        "username": req.user.login
-    }
-    ,
-    {
-        "subMenu":"Users"
-    }));
+        if(err)
+        {
+            res.redirect("/users");
+            return;
+        }
+
+        res.send(builder.BuildPage("UserProfile",
+        {
+            "title": "User: " + user.login,
+            "username": user.login,
+            "id": user.id,
+            "group": user.group,
+            "Profile":"is-active"
+        }
+        ,
+        {
+            "subMenu":"Users",
+            "subMenuInActive": true
+        }));
+    });
 }); 
 
 //Permission routes

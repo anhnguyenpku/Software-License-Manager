@@ -81,9 +81,19 @@ async function GetUserByLogin(login,callback)
     Query("SELECT * FROM `slm_users` WHERE `login`=" + SqlScape(login),callback);
 }
 
+async function GetUserById(id,callback)
+{
+    Query("SELECT * FROM `slm_users` WHERE `id`=" + SqlScape(id),callback);
+}
+
 async function GetGroupByName(name,callback)
 {
     Query("SELECT * FROM `slm_groups` WHERE `name`=" + SqlScape(name),callback);
+}
+
+async function GetGroupById(id,callback)
+{
+    Query("SELECT * FROM `slm_groups` WHERE `id`=" + SqlScape(id),callback);
 }
 
 /**
@@ -105,5 +115,7 @@ module.exports = {
         "Start":Start,
         "Stop":Stop,
         "GetUserByLogin": GetUserByLogin,
-        "GetGroupByName": GetGroupByName
+        "GetUserById": GetUserById,
+        "GetGroupByName": GetGroupByName,
+        "GetGroupById": GetGroupById
     };

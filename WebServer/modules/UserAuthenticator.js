@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const SqlScape = require('sqlstring').escape;
 
-const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+const User = require('./User');
 
 /**
  * {UserAuthenticator}
@@ -10,10 +10,11 @@ let auth;
 
 class UserAuthenticator
 {
-    constructor(database,settings)
+    constructor(app)
     {
-        this.Database = database;
-        this.Settings = settings;
+        this.app = app;
+        this.Database = app.Database;
+        this.Settings = app.Settings;
 
         this.divider = this.Settings.GetSetting("authenticate.divider");
         this.expirationDays = parseInt(this.Settings.GetSetting("authenticate.expiration"));
@@ -172,7 +173,8 @@ class UserAuthenticator
 
             if(date < exdate)
             {
-                auth.Database.Query("SELECT * FROM `slm_users` WHERE `id`=" + SqlScape(session.userid),function(results,fields,err)
+                var user = new User(session.userid);
+                user.Load(function(err)
                 {
                     if(err)
                     {
@@ -180,7 +182,7 @@ class UserAuthenticator
                         return;
                     }
 
-                    callback(true,results[0],null);
+                    callback(true,user,null);
                 });
             }
             else
