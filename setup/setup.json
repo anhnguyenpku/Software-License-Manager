@@ -1,6 +1,9 @@
 {
     "users":[
-        {"login": "admin","password": "admin", "group": "superusers"}
+        {"login": "admin","password": "admin", "group": "superusers"},
+        {"login": "readonly","password": "readonly", "group": "readonly"},
+        {"login": "manager","password": "manager", "group": "softwareManager"},
+        {"login": "distributor","password": "distributor", "group": "distributor"}
     ],
     "groups":
     {

@@ -19,5 +19,6 @@
         "key": "path/to/key",
         "cert": "path/to/cert",
         "passphrase": ""
-    }
+    },
+    "Content": "Content"
 }

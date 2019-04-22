@@ -3,24 +3,25 @@ const logger = require('../modules/Logger');
 const Settings = require('../modules/Settings');
 const Auth = require("../WebServer/modules/UserAuthenticator");
 
-const contentPath = 'Content';
+logger.Log("Setup","Loading configs...");
 
+const config = require('../modules/ConfigHandler');
 const setupConfig = require('./setup.json');
 
-if(!fs.existsSync(contentPath)) fs.mkdir(contentPath,LogFSError);
+logger.Log("Setup","Creating Content directory...");
+if(!fs.existsSync(config.Content)) fs.mkdir(config.Content,LogFSError);
 
 function LogFSError(err)
 {
     if(err) logger.Error("Setup (FS)", err.message);
 }
 
-const config = require('../modules/ConfigHandler');
-
+logger.Log("Setup","Connecting to database...");
 const database = require('../modules/Mysql');
 database.Start(config.database, logger);
 
+logger.Log("Setup (DB)","Creating tables...");
 let query = fs.readFileSync(__dirname + "/SQL/setup.sql").toString();
-
 database.Query(query,function(results,fields,err)
 {
     if(err)
@@ -33,13 +34,12 @@ database.Query(query,function(results,fields,err)
         return;
     }
 
+    logger.Log("Setup (DB)","Adding group entries...");
     //Add Groups
-    AddGroupEntries();
-
-    AddUserEntries();   
+    AddGroupEntries(AddUserEntries);
 });
 
-function AddGroupEntries()
+function AddGroupEntries(callback)
 {
     const adminPermissions =
     {
@@ -74,19 +74,47 @@ function AddGroupEntries()
     };
 
 
-    database.QueryEmpty("INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (1," 
-        + setupConfig.groups.superusers + ",'" + JSON.stringify(adminPermissions) +"');");
-    database.QueryEmpty("INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (2," 
-        + setupConfig.groups.readonly + ",'" + JSON.stringify(readonlyPermissions) +"');");
-    database.QueryEmpty("INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (3," 
-        + setupConfig.groups.softwareManager + ",'" + JSON.stringify(managerPermissions) +"');");
-    database.QueryEmpty("INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (4," 
-        + setupConfig.groups.distributor + ",'" + JSON.stringify(distributorPermissions) +"');");
+    let qeurys = [
+        "INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (1,'" 
+        + setupConfig.groups.superusers + "','" + JSON.stringify(adminPermissions) +"');",
+
+        "INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (2,'" 
+        + setupConfig.groups.readonly + "','" + JSON.stringify(readonlyPermissions) +"');",
+
+        "INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (3,'" 
+        + setupConfig.groups.softwareManager + "','" + JSON.stringify(managerPermissions) +"');",
+
+        "INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (4,'" 
+        + setupConfig.groups.distributor + "','" + JSON.stringify(distributorPermissions) +"');"
+    ];
+    var currentQuery = -1;
+
+    NextQeury();
+
+    function NextQeury()
+    {
+        currentQuery++;
+        if(currentQuery == qeurys.length)
+        {
+            callback();
+            return;
+        }
+
+        database.Query(qeurys[currentQuery],function(r,f,e)
+        {
+            if(e)
+            {
+                logger.Error("Setup (DB)",e);
+            }
+
+            NextQeury();
+        });
+    }
 }
 
 function AddUserEntries()
 {
-
+    logger.Log("Setup (DB)","Adding user entries...");
     //Load the settings
     let settings = new Settings(database,function(err)
     {
@@ -101,17 +129,23 @@ function AddUserEntries()
         }
 
         //Load The Authenticator
-        let auth = new Auth(database,settings);
+        let auth = new Auth({Database:database,Settings:settings});
 
-
-        for(var i = 0; i < setupConfig.users; i++)
+        var i = -1;
+        NextQuery();
+        function NextQuery()
         {
+            i++;
+            if(i == setupConfig.users.length)
+            {
+                logger.Log("Setup","Done");
+                return;
+            }
+
             const user = setupConfig.users[i];
 
-            auth.RegisterWithGroup(user.login, auth.Hmac(user.login,user.password), setupConfig[user.group], function(err)
-            {
-                database.Stop();
-                
+            auth.RegisterWithGroup(user.login, auth.Hmac(user.login,user.password), setupConfig.groups[user.group], function(err)
+            {                
                 if(err)
                 {
                     logger.Error("Setup (Account Creator)", err.message);
@@ -121,7 +155,7 @@ function AddUserEntries()
                     return;
                 }
 
-                logger.Log("Setup","Done");
+                NextQuery();
             });
         }
     });
