@@ -60,11 +60,15 @@ typings/
 # next.js build output
 .next
 
+#SLM specific folders
 Content/
 dev-config.json
 cert/
 
+# Vscode
 .vs/
+.vscode/
 
+#Other
 databasemodel*
 sh.exe.stackdump
