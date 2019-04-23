@@ -32,6 +32,46 @@ web.use(bodyParser.urlencoded({ extended: true }));
 web.use(bodyParser.json());
 web.use(fileUpload());
 
+//Start the server
+function StartServer(appHandler)
+{
+    //save the apphandler reference in the module
+    app = appHandler;
+
+    //Setup User Module
+    User.SetupModule(app);
+    UserAuthenticator.SetupModule(app);
+
+    //Register Api Route and 404 Route
+    web.all("/" + app.Settings.GetSetting("web.apiroute") + ":request" ,ApiHandler);
+    web.all("*", page404);
+
+    //Initialize authenticator
+    authenticator = new UserAuthenticator();
+
+    //Start the web- and socketserver
+    if(app.Config.ssl.enabled)
+    {
+        server = https.createServer(app.Config.ReadSSL(),web).listen(app.Config.web.httpsPort);
+        
+        http.createServer(function(req,res)
+        {
+            res.writeHead(301, { Location: "https://" + req.headers.host + req.url });
+            res.end();
+        }).listen(app.Config.web.httpPort);
+    }
+    else
+    {
+        server = http.Server(web);
+        server.listen(app.Config.web.httpPort);
+    }
+
+    sockets.Listen(server,app,authenticator);
+
+    //Log
+    app.Logger.Log("WebServer", "Socket- and WebServer are successfully started.")
+}
+
 //CheckAuthentication
 async function CheckAuthentication(req,res,next)
 {
@@ -94,45 +134,6 @@ async function CheckAuthentication(req,res,next)
             }
         }
     });
-}
-
-//Start the server
-function StartServer(appHandler)
-{
-    //save the apphandler reference in the module
-    app = appHandler;
-
-    //Setup User Module
-    User.SetupModule(app);
-
-    //Register Api Route and 404 Route
-    web.all("/" + app.Settings.GetSetting("web.apiroute") + ":request" ,ApiHandler);
-    web.all("*", page404);
-
-    //Initialize authenticator
-    authenticator = new UserAuthenticator(app);
-
-    //Start the web- and socketserver
-    if(app.Config.ssl.enabled)
-    {
-        server = https.createServer(app.Config.ReadSSL(),web).listen(app.Config.web.httpsPort);
-        
-        http.createServer(function(req,res)
-        {
-            res.writeHead(301, { Location: "https://" + req.headers.host + req.url });
-            res.end();
-        }).listen(app.Config.web.httpPort);
-    }
-    else
-    {
-        server = http.Server(web);
-        server.listen(app.Config.web.httpPort);
-    }
-
-    sockets.Listen(server,app,authenticator);
-
-    //Log
-    app.Logger.Log("WebServer", "Socket- and WebServer are successfully started.")
 }
 
 //Secure Web Routes

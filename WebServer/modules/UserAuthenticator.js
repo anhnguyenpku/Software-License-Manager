@@ -4,25 +4,23 @@ const SqlScape = require('sqlstring').escape;
 const User = require('./User');
 
 /**
- * {UserAuthenticator}
+ * @type {UserAuthenticator}
  */
-let auth;
+var auth;
+
+var app;
 
 class UserAuthenticator
 {
-    constructor(app)
+    constructor()
     {
-        this.app = app;
-        this.Database = app.Database;
-        this.Settings = app.Settings;
-
-        this.divider = this.Settings.GetSetting("authenticate.divider");
-        this.expirationDays = parseInt(this.Settings.GetSetting("authenticate.expiration"));
-        this.iterations = parseInt(this.Settings.GetSetting("authenticate.iterations"));
-        this.saltLength = parseInt(this.Settings.GetSetting("authenticate.saltlen"));
-        this.cookieLength = parseInt(this.Settings.GetSetting("authenticate.cookielen"));
-        this.secretLength = parseInt(this.Settings.GetSetting("authenticate.secretlen"));
-        this.encoding = this.Settings.GetSetting("encryption.encoding");
+        this.divider = app.Settings.GetSetting("authenticate.divider");
+        this.expirationDays = parseInt(app.Settings.GetSetting("authenticate.expiration"));
+        this.iterations = parseInt(app.Settings.GetSetting("authenticate.iterations"));
+        this.saltLength = parseInt(app.Settings.GetSetting("authenticate.saltlen"));
+        this.cookieLength = parseInt(app.Settings.GetSetting("authenticate.cookielen"));
+        this.secretLength = parseInt(app.Settings.GetSetting("authenticate.secretlen"));
+        this.encoding = app.Settings.GetSetting("encryption.encoding");
 
         auth = this;
     }
@@ -38,7 +36,7 @@ class UserAuthenticator
     {
         login = SqlScape(login);
 
-        this.Database.Query("SELECT * FROM `slm_users` WHERE `login`=" + login, function(results, fields, err)
+        app.Database.Query("SELECT * FROM `slm_users` WHERE `login`=" + login, function(results, fields, err)
         {
             if(err)
             {
@@ -93,7 +91,7 @@ class UserAuthenticator
     {
         let secret = this.SecurePassword(password);
 
-        this.Database.Query("INSERT IGNORE INTO `slm_users` (`login`,`secret`) VALUES (" + SqlScape(login) +
+        app.Database.Query("INSERT IGNORE INTO `slm_users` (`login`,`secret`) VALUES (" + SqlScape(login) +
                 ", " + SqlScape(secret) +")",function(results,fields,err)
         {
             callback(err);
@@ -112,7 +110,7 @@ class UserAuthenticator
         let secret = this.SecurePassword(password);
         let auth = this;
 
-        this.Database.GetGroupByName(group,function(groups,fields,grErr)
+        app.Database.GetGroupByName(group,function(groups,fields,grErr)
         {
             if(grErr)
             {
@@ -128,7 +126,7 @@ class UserAuthenticator
 
             var groupId = groups[0].id;
 
-            auth.Database.Query("INSERT IGNORE INTO `slm_users` (`login`,`secret`, `group`) VALUES (" + SqlScape(login) + 
+            app.Database.Query("INSERT IGNORE INTO `slm_users` (`login`,`secret`, `group`) VALUES (" + SqlScape(login) + 
                 ", " + SqlScape(secret) + ", " + SqlScape(groupId) + ")",function(results,fields,err)
             {
                 if(err)
@@ -152,7 +150,7 @@ class UserAuthenticator
     {
         cookie = SqlScape(cookie);
         
-        this.Database.Query("SELECT * FROM `slm_user_sessions` WHERE `cookie`=" + cookie + " AND `ipadress`='" + sessioninfo.ip + "'",
+        app.Database.Query("SELECT * FROM `slm_user_sessions` WHERE `cookie`=" + cookie + " AND `ipadress`='" + sessioninfo.ip + "'",
         function(results,fields,err)
         {
             if(err)
@@ -188,7 +186,7 @@ class UserAuthenticator
             else
             {
                 let removeCookieQuery = "DELETE FROM `slm_user_sessions` WHERE `id`=" + session.id;
-                auth.Database.QueryEmpty(removeCookieQuery);
+                app.Database.QueryEmpty(removeCookieQuery);
 
                 callback(false,null,null);
             }
@@ -204,7 +202,7 @@ class UserAuthenticator
      */
     async ChangePassword(login, oldPWD, newPWD,callback)
     {
-        this.Database.Query("SELECT * FROM `slm_users` WHERE `login`=" + SqlScape(login),function(results, fields, err)
+        app.Database.Query("SELECT * FROM `slm_users` WHERE `login`=" + SqlScape(login),function(results, fields, err)
         {
             if(err)
             {
@@ -231,7 +229,7 @@ class UserAuthenticator
             {
                 let newSecret = auth.SecurePassword(newPWD);
 
-                auth.Database.Query("UPDATE `secret`='" + newSecret + "' WHERE `id`=" + userdata.id + "",function(results,fields,err)
+                app.Database.Query("UPDATE `secret`='" + newSecret + "' WHERE `id`=" + userdata.id + "",function(results,fields,err)
                 {
                     if(err)
                     {
@@ -299,6 +297,11 @@ class UserAuthenticator
         hmac.update(password);
 
         return hmac.digest('hex');
+    }
+
+    static SetupModule(appHandler)
+    {
+        app = appHandler;
     }
 }
 
