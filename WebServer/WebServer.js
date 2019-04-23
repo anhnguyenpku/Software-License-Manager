@@ -415,6 +415,11 @@ web.all("/permissions",function(req,res)
     res.send(builder.BuildPage("Permissions",{},{}));
 });
 
+web.get("/permissions/:group/permissions",function(req,res)
+{
+    res.send(builder.BuildPage("PermissionEditor",{group:req.params.group},{}));
+});
+
 //Other Routes
 
 web.all("/filebrowser",function(req,res)

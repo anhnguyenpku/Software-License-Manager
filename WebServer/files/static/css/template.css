@@ -141,3 +141,9 @@ article.message.has-action .action
     padding: 1.25em 1.5em;
     padding-top: 0px;
 }
+
+blockquote.info
+{
+    width: 50%;
+    margin-top: 50px;
+}
