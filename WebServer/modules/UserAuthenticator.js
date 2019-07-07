@@ -70,7 +70,7 @@ class UserAuthenticator
                 let query = "INSERT INTO `slm_user_sessions` (`userid`, `cookie`, `ipadress`, `expirationdate`) VALUES (" +
                     userdata.id + ", '" + cookieSecret + "', '" + sessioninfo.ip + "', '" + date.toDateString() + "');";
 
-                auth.Database.QueryEmpty(query);
+                app.Database.QueryEmpty(query);
 
                 callback(cookieSecret,true,null);
             }
