@@ -78,7 +78,7 @@ class Searcher
             {
                 const obj = this.object[i];
 
-                if(obj[key].contains(value))
+                if(obj[key].toLowerCase().contains(value.toLowerCase()))
                 {
                     output.push(obj);
                 }
@@ -92,7 +92,8 @@ class Searcher
 
                 for(const key in obj)
                 {
-                    if(obj[key].contains(query))
+                    "".toLowerCase
+                    if(obj[key].toLowerCase().contains(query.toLowerCase()))
                     {
                         output.push(obj);
                         break;
