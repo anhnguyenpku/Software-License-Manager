@@ -306,18 +306,21 @@ async function RegisterEvents(socket)
         });
     });
 
-    socket.on("user.chanePassword",async function(userdata)
+    socket.on("user.chanePassword",async function(enUserdata)
     {
-        authenticator.ChangePassword(userdata.login,userdata.oldPWD,userdatanewPWD,function(success)
+        var userdata = socket.channel.DecryptMessage(enUserdata);
+        authenticator.ChangePassword(userdata.login,userdata.oldPWD,userdata.newPWD,function(success)
         {
             if(success)
             {
+                app.Log("PASS","success");
                 socket.emit("user.changePassword");
             }
             else
             {
                 var encrypted = socket.channel.EncryptMessage("The password could not be changed!");
                 socket.emit("error.user.changePassword",encrypted);
+                app.Log("PASS","failed");
             }
         });
     });

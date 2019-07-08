@@ -202,6 +202,7 @@ class UserAuthenticator
      */
     async ChangePassword(login, oldPWD, newPWD,callback)
     {
+        console.log(login);
         app.Database.Query("SELECT * FROM `slm_users` WHERE `login`=" + SqlScape(login),function(results, fields, err)
         {
             if(err)
@@ -229,7 +230,7 @@ class UserAuthenticator
             {
                 let newSecret = auth.SecurePassword(newPWD);
 
-                app.Database.Query("UPDATE `secret`='" + newSecret + "' WHERE `id`=" + userdata.id + "",function(results,fields,err)
+                app.Database.Query("UPDATE `slm_users` SET `secret`=" + SqlScape(newSecret) + " WHERE `id`=" + SqlScape(userdata.id) ,function(results,fields,err)
                 {
                     if(err)
                     {

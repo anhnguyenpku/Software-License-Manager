@@ -1,3 +1,5 @@
+<script>var login = "{{username}}";</script>
+<script src="/js/sha512.js"></script>
 <h1 class="title is-2">User: {{username}}</h1>
 <nav class="breadcrumb has-triangles-separator" aria-label="breadcrumbs">
     <ul>
@@ -19,7 +21,7 @@
         <label class="label">Password
         </label>
         <div class="control">
-            <a class="button">Change Password</a>
+            <a class="button" id="change">Change Password</a>
         </div>
     </div>
     <div class="field column is-6" style="margin-bottom:0px;">
@@ -42,3 +44,39 @@
         </div>
     </div>
 </form>
+
+<div id="passModal" class="modal {{modal-active}}">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Change Password</p>
+            <button class="delete modal-close-btn" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <form id="changepassform">
+                <div class="field">
+                    <label class="label">Current Password*</label>
+                    <div class="control">
+                        <input class="input" type="password" placeholder="Current Password" name="current">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">New Password*</label>
+                    <div class="control">
+                        <input class="input" type="password" placeholder="New Password" name="new">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Repeat New Password*</label>
+                    <div class="control">
+                        <input class="input" type="password" placeholder="Repeat New Password" name="repeat">
+                    </div>
+                </div>
+            </form>
+        </section>
+        <footer class="modal-card-foot buttons is-right">
+            <button class="button is-info submit">Change Password</button>
+            <button class="button modal-close-btn">Cancel</button>
+        </footer>   
+    </div>
+</div>
