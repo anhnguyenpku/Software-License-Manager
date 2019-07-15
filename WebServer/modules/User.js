@@ -12,7 +12,7 @@ class User
         this.groupId;
         this.login;
         this.group;
-        this.permissions;
+        this.permissions = {};
     }
 
     Load(callback)
@@ -63,6 +63,69 @@ class User
 
             callback();
         });
+    }
+
+    HasPermission(req)
+    {
+        const post = Object.keys(req.body).length != 0;
+        const route = req.path;
+
+        if(req.route === "/" && !post) return true;
+
+        if(this.permissions["su"] === true)
+        {
+            return true;
+        }
+        else if(route.indexOf("/settings") !== -1 || route.indexOf("/config") !== -1 || route.indexOf("/system") !== -1)
+        {
+            return false;
+        }
+        else if(this.permissions["readonly"] === true)
+        {
+            if(post || !this.IsAllowedUsersPage(route)) return false;
+            else if(!post && this.IsAllowedUsersPage(route))
+            {
+                return true;
+            }
+        }
+        else if(this.permissions["softwareManager"] === true || this.permissions["softwareManager"] === true)
+        {
+            return this.IsAllowedUsersPage(route);
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if a route is an allowed non-superuser user-route or not.
+     * @param {String} route The route the user is located
+     * @returns A boolean which represents if the route is allowed or not.
+     */
+    IsAllowedUsersPage(route)
+    {
+        if(route.indexOf("user") !== -1)
+        {
+            if(route.indexOf("/users") !== -1)
+            {
+                return false;
+            }
+            else if(route.indexOf("/user/profile") === -1)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        else if(route.indexOf("permissions") !== -1)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     static SetupModule(appHandler)

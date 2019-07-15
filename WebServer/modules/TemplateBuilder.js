@@ -140,6 +140,7 @@ class TemplateBuilder
 
         this.Error = {};
         this.Error.e404 = fs.readFileSync(templateFolder + "404.html").toString();
+        this.Error.e401 = fs.readFileSync(templateFolder + "401.html").toString();
 
         //Menus
         this.MenuTemplate = fs.readFileSync(templateFolder + "menu.html").toString();

@@ -27,9 +27,9 @@ var app;
 //Express extensions
 web.use(express.static(__dirname + "/files/static"));
 web.use(cookieParser());
-web.use(CheckAuthentication);
 web.use(bodyParser.urlencoded({ extended: true }));
 web.use(bodyParser.json());
+web.use(CheckAuthentication);
 web.use(fileUpload());
 
 //Start the server
@@ -116,7 +116,14 @@ async function CheckAuthentication(req,res,next)
 
             //Serve the requested page
             req["user"] = user;
-            next();
+
+            
+            //Continue doing action
+            if(user.HasPermission(req))
+                next();
+            //Go back to homepage
+            else
+                res.end(builder.BuildErrorPage("401"));
         }
         //If key is invalid
         else
