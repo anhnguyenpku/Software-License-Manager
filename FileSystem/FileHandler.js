@@ -1,6 +1,7 @@
 const fs = require('fs');
 const SqlScape = require('sqlstring').escape;
 
+//TODO: Change with settings and Config
 const ContentFolder = __dirname + "/../Content/";
 
 var app;
