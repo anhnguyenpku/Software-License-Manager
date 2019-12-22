@@ -25,8 +25,8 @@ app.Config = config;
 logger.Log("Loader","Loaded Config");
 
 //Load Database
-const database = require('./modules/Mysql');
-database.Start(config.database, logger);
+const Database = require('./modules/Database');
+const database = new Database(config.database,logger);
 
 app.Database = database;
 logger.Log("Loader", "Loaded Mysql Database Pool");
@@ -40,8 +40,7 @@ let settings = new Settings(database,function(err)
         logger.Error("Settings", err.message);
 
         logger.Log("Loader","Stopping Server...");
-        database.Stop();
-        
+                
         return;
     }
 

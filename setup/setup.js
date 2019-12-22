@@ -17,102 +17,43 @@ function LogFSError(err)
 }
 
 logger.Log("Setup","Connecting to database...");
-const database = require('../modules/Mysql');
-database.Start(config.database, logger);
+const Database = require('../modules/Database');
+const database = new Database(config.database, logger);
 
 logger.Log("Setup (DB)","Creating tables...");
-let query = fs.readFileSync(__dirname + "/SQL/setup.sql").toString();
-database.Query(query,function(results,fields,err)
+let query = require('./database.json');
+
+database.Connect(function(err,db,stop)
 {
     if(err)
     {
-        logger.Error("Setup (SQL)", err.message);
-        logger.Log("Setup", "Stopping the setup...");
-        logger.Log("Setup", "Try to fix the error and try again.");
-
-        database.Stop();
+        stop();
         return;
     }
 
-    logger.Log("Setup (DB)","Adding group entries...");
-    //Add Groups
-    AddGroupEntries(AddUserEntries);
-});
-
-function AddGroupEntries(callback)
-{
-    const adminPermissions =
+    for(let key in Object.keys(query))
     {
-        "su": true,
-        "readonly": false,
-        "softwareManager": false,
-        "distributor": false
-    };
-
-    const readonlyPermissions =
-    {
-        "su": false,
-        "readonly": true,
-        "softwareManager": true,
-        "distributor": false
-    };
-
-    const managerPermissions =
-    {
-        "su": false,
-        "readonly": false,
-        "softwareManager": true,
-        "distributor": false
-    };
-
-    const distributorPermissions =
-    {
-        "su": false,
-        "readonly": false,
-        "softwareManager": false,
-        "distributor": true
-    };
-
-
-    let qeurys = [
-        "INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (1,'" 
-        + setupConfig.groups.superusers + "','" + JSON.stringify(adminPermissions) +"');",
-
-        "INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (2,'" 
-        + setupConfig.groups.readonly + "','" + JSON.stringify(readonlyPermissions) +"');",
-
-        "INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (3,'" 
-        + setupConfig.groups.softwareManager + "','" + JSON.stringify(managerPermissions) +"');",
-
-        "INSERT IGNORE INTO `slm_groups` (`id`, `name`, `permissions`) VALUES (4,'" 
-        + setupConfig.groups.distributor + "','" + JSON.stringify(distributorPermissions) +"');"
-    ];
-    var currentQuery = -1;
-
-    NextQeury();
-
-    function NextQeury()
-    {
-        currentQuery++;
-        if(currentQuery == qeurys.length)
+        db.createCollection(key,{},function(err,coll)
         {
-            callback();
-            return;
-        }
-
-        database.Query(qeurys[currentQuery],function(r,f,e)
-        {
-            if(e)
+            if(err)
             {
-                logger.Error("Setup (DB)",e);
+                logger.Error("Setup (DB)",err.message);
+                return;
             }
 
-            NextQeury();
+            coll.insert(query[key],function(err,res)
+            {
+                if(err)
+                {
+                    logger.Error("Setup (DB)",err.message);
+                    return;
+                }
+            });
         });
-    }
-}
+    }    
+});
 
-function AddUserEntries()
+function AddUserEntries(db,stop)
 {
     logger.Log("Setup (DB)","Adding user entries...");
     //Load the settings

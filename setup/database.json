@@ -1,0 +1,28 @@
+{
+    "Groups": [
+        {
+            "name": "admin",
+            "permissions": {"su":true,"readonly":false,"softwareManager":false,"distributor":false}
+        },
+        {
+            "name": "readonly",
+            "permissions": {"su":false,"readonly":true,"softwareManager":true,"distributor":false}
+        },
+        {
+            "name": "distributor",
+            "permissions": {"su":false,"readonly":false,"softwareManager":false,"distributor":true}
+        },
+        {
+            "name": "manager",
+            "permissions": {"su":false,"readonly":false,"softwareManager":true,"distributor":false}
+        }
+    ],
+    "Settings": [
+        {"type":"authentication","cookielen":64,"divider":":","iterations":100000,"expiration":5,"saltlen":128,"secretlen":1024},
+        {"type":"encryption","cipher":"aes-256-ctr","encoding":"base64","keylength":32,"primelength":2048},
+        {"type":"files","sidlen":8,"vidlen":8},
+        {"type":"web","apiroute":"api"}
+    ],
+    "Software": [],
+    "Users": []
+}

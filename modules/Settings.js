@@ -4,9 +4,10 @@ class Settings
 {
     constructor(database,callback)
     {
+        this.Settings = [];
         setts = this;
 
-        database.Query("SELECT * FROM `slm_settings`",function(results,fields,err)
+        database.Connect(function(err,db,stop)
         {
             if(err)
             {
@@ -14,8 +15,23 @@ class Settings
                 return;
             }
 
-            setts.Settings = results;
-            callback(null);
+            var coll = db.collection("Settings");
+            coll.find().toArray(function(err,res)
+            {
+                for(let i = 0; i < res.length; i++)
+                {
+                    const settGroup = res[i];
+
+                    for(let key in Object.keys(settGroup))
+                    {
+                        if(key == "_id" || key == "type") continue;
+
+                        setts.Settings.push({"key":settGroup.type + "." + key,"value":settGroup[key]});
+                    }
+
+                }
+            });
+
         });
     }
 

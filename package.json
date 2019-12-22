@@ -25,6 +25,7 @@
     "express-fileupload": "^0.4.0",
     "ip": "^1.1.5",
     "ipaddr.js": "^1.9.1",
+    "mongodb": "^3.3.0-beta2",
     "mustache": "^2.3.2",
     "mysql": "^2.17.1",
     "scrypt-js": "^2.0.4",
